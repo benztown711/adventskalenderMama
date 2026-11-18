@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adventskalender Motive</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&family=Nunito:wght@400;600;800&family=Caveat:wght@600&display=swap">
+<style>
+/* Layout: Galerie mit Handy-Vorschauen, je Motiv eine Karte mit Name, Idee und wofür es sich eignet */
+:root {
+  --bg: #f6f2ec; --fg: #1f2a3c; --muted: #5d6676; --card: #ffffff; --line: #e3dcd2; --accent: #a8322d; --tag: #f1e6d6;
+  --font-display: "Fraunces", Georgia, serif; --font-body: "Nunito", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1726; --fg: #eef0f4; --muted: #a6afbf; --card: #172236; --line: #26344d; --accent: #f08a7e; --tag: #22304a; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0f1726; --fg: #eef0f4; --muted: #a6afbf; --card: #172236; --line: #26344d; --accent: #f08a7e; --tag: #22304a; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 32px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 28px; }
+header { display: flex; flex-direction: column; gap: 8px; max-width: 640px; }
+.eyebrow { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; font-weight: 800; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(28px, 6vw, 40px); margin: 0; line-height: 1.1; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); line-height: 1.55; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.phone { width: 100%; max-width: 230px; margin: 0 auto; aspect-ratio: 9 / 16; border-radius: 22px; overflow: hidden;
+  border: 6px solid #1b1f27; box-shadow: 0 8px 22px rgba(0,0,0,.18); background: #000; }
+.phone svg { display: block; width: 100%; height: 100%; }
+.meta { display: flex; flex-direction: column; gap: 6px; }
+.meta .nr { font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.meta h2 { font-family: var(--font-display); font-weight: 600; font-size: 21px; margin: 0; }
+.meta p { margin: 0; color: var(--muted); line-height: 1.5; font-size: 15px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags span { background: var(--tag); border-radius: 999px; padding: 3px 10px; font-size: 13px; font-weight: 600; }
+</style>
+</head><body>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Svenjas Adventskalender</span>
+    <h1>Welches Motiv soll es werden?</h1>
+    <p>Alle Vorschauen zeigen den 10. Dezember: Die Türchen 1 bis 9 sind schon offen, die 10 ist heute dran, der Rest ist noch zu. Antippen geht hier noch nicht, das sind nur Entwürfe fürs Aussehen.</p>
+  </header>
+  <main class="grid" id="grid"></main>
+</div>
+
+<script>
+const ORDER = [7,18,3,24,11,21,1,14,9,5,20,16,2,12,22,8,17,4,19,10,13,23,6,15];
+const TODAY = 10;
+const EMOJI = {1:"🎄",2:"☕",3:"😂",4:"💛",5:"🧦",6:"🎅",7:"🧩",8:"🎵",9:"⛄"};
+const st = n => n < TODAY ? "open" : n === TODAY ? "today" : "closed";
+const NUM = (x, y, n, size, fill, font="Fraunces") =>
+  `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-family="${font}, Georgia, serif" font-weight="600" font-size="${size}" fill="${fill}">${n}</text>`;
+const EMO = (x, y, n, size) => `<text x="${x}" y="${y+1}" text-anchor="middle" dominant-baseline="central" font-size="${size}">${EMOJI[n]}</text>`;
+function rnd(seed) { let s = seed; return () => (s = (s * 9301 + 49297) % 233280) / 233280; }
+function dots(n, seed, color, maxR = 1.4, yMax = 320) {
+  const r = rnd(seed); let o = "";
+  for (let i = 0; i < n; i++) o += `<circle cx="${(r()*180).toFixed(1)}" cy="${(r()*yMax).toFixed(1)}" r="${(r()*maxR+.4).toFixed(1)}" fill="${color}"/>`;
+  return o;
+}
+const svg = (inner, defs = "") => `<svg viewBox="0 0 180 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>${defs}</defs>${inner}</svg>`;
+const TITLE = (fill, y = 22, size = 12) => `<text x="90" y="${y}" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-style="italic" font-weight="500" font-size="${size}" fill="${fill}">Svenjas Adventskalender</text>`;
+const GLOW = `<radialGradient id="glow" cx="50%" cy="45%" r="65%"><stop offset="0" stop-color="#fff4d6"/><stop offset=".5" stop-color="#ffd98a"/><stop offset="1" stop-color="#c8892c"/></radialGradient>`;
+
+// 1 Winternacht
+function winter() {
+  const cols = ["#a8322d","#1f5a44","#5b2a4a","#2b4a7a","#8a5a1e"];
+  let g = "";
+  ORDER.forEach((n, i) => {
+    const x = 9 + (i % 4) * 42, y = 62 + Math.floor(i / 4) * 38, s = st(n);
+    if (s === "open") g += `<rect x="${x}" y="${y}" width="36" height="33" rx="4" fill="url(#glow)"/>` + EMO(x+18, y+16.5, n, 15);
+    else g += `<rect x="${x}" y="${y}" width="36" height="33" rx="4" fill="${cols[(n*3+i)%5]}" ${s==="today"?'stroke="#ffd98a" stroke-width="2"':'opacity=".8"'}/>` + NUM(x+18, y+17, n, 14, "#f4f1ea");
+  });
+  return svg(`<rect width="180" height="320" fill="url(#night)"/>${dots(60, 3, "rgba(244,241,234,.75)")}
+    ${TITLE("#ffd98a", 30, 13)}<text x="90" y="46" text-anchor="middle" font-family="Nunito" font-size="7" fill="#b9c3d6">Noch 14 Tage bis Heiligabend</text>${g}
+    <path d="M0 304 Q50 294 100 300 T180 297 V320 H0Z" fill="#f4f1ea"/>
+    <path d="M22 302 h12 v-7 l-6 -5 l-6 5z M142 299 h14 v-8 l-7 -6 l-7 6z" fill="#0a1626"/>`,
+    GLOW + `<linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a3360"/><stop offset="1" stop-color="#0d1b2e"/></linearGradient>`);
+}
+
+// 2 Lebkuchenhaus
+function lebkuchen() {
+  const candy = ["#c0392b","#2e7d5b","#d4a72c","#2b6cb0"];
+  const nums = ORDER.filter(n => n !== 24);
+  let g = "", k = 0;
+  const win = (x, y, w, h, n, rx = 5) => {
+    const s = st(n);
+    if (s === "open") return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="url(#glow)" stroke="#fff" stroke-width="2"/>` + EMO(x+w/2, y+h/2, n, 12);
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${candy[n%4]}" stroke="${s==="today"?"#ffd98a":"#fff"}" stroke-width="${s==="today"?3:2}"/>` + NUM(x+w/2, y+h/2+1, n, 11, "#fff");
+  };
+  for (let r = 0; r < 6; r++) for (let c = 0; c < 4; c++) {
+    const x = 30 + c * 32, y = 128 + r * 29;
+    if (r === 5 && c === 1) { const n = nums[k++]; g += win(62, y-2, 58, 34, n, 12); continue; }
+    if (r === 5 && c === 2) continue;
+    g += win(x, y, 26, 23, nums[k++]);
+  }
+  let icing = "", beads = "";
+  for (let i = 0; i <= 11; i++) { const t = i / 11;
+    icing += `<circle cx="${8 + t*82}" cy="${124 - t*80}" r="4.5" fill="#fff"/><circle cx="${172 - t*82}" cy="${124 - t*80}" r="4.5" fill="#fff"/>`; }
+  for (let i = 0; i < 9; i++) beads += `<circle cx="${26 + i*16}" cy="121" r="3.2" fill="${candy[i%4]}"/>`;
+  const gable = st(24);
+  return svg(`<rect width="180" height="320" fill="#14233d"/>${dots(55, 7, "rgba(255,255,255,.7)", 1.3, 250)}${TITLE("#fbe3b8", 24)}
+    <ellipse cx="90" cy="312" rx="120" ry="22" fill="#f6f3ee"/>
+    <rect x="22" y="118" width="136" height="186" fill="#a8642c"/>
+    <path d="M22 300 q8 -6 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0" fill="none" stroke="#fff" stroke-width="2.5"/>
+    <polygon points="4,126 90,40 176,126" fill="#8a4f22"/>${icing}${beads}
+    <circle cx="90" cy="92" r="16" fill="${candy[0]}" stroke="#fff" stroke-width="2.5"/>${NUM(90, 93, 24, 13, "#fff")}
+    <rect x="150" y="54" width="12" height="30" fill="#8a4f22"/><rect x="148" y="50" width="16" height="6" rx="2" fill="#fff"/>
+    ${g}
+    <path d="M10 304 v-26 a6 6 0 0 1 12 0" fill="none" stroke="#fff" stroke-width="4"/><path d="M10 304 v-26 a6 6 0 0 1 12 0" fill="none" stroke="#c0392b" stroke-width="4" stroke-dasharray="4 4"/>`, GLOW);
+}
+
+// 3 Weihnachtsbaum
+function baum() {
+  const rows = [[98,2],[126,3],[155,4],[182,4],[210,5],[238,6]];
+  const cols = ["#c0392b","#d4a72c","#c9d3df","#2b6cb0","#8e3b6b"];
+  let g = "", k = 0;
+  rows.forEach(([y, n]) => { for (let i = 0; i < n; i++) {
+    const x = 90 + (i - (n-1)/2) * 21, num = ORDER[k++], s = st(num), yy = y + (i % 2) * 3;
+    g += `<line x1="${x}" y1="${yy-14}" x2="${x}" y2="${yy-9}" stroke="#d4a72c" stroke-width="1"/>`;
+    if (s === "open") g += `<circle cx="${x}" cy="${yy}" r="9.5" fill="url(#glow)"/>` + EMO(x, yy, num, 10);
+    else g += `<circle cx="${x}" cy="${yy}" r="9.5" fill="${cols[num%5]}" ${s==="today"?'stroke="#fff3c4" stroke-width="2.2"':''}/><circle cx="${x-3}" cy="${yy-3.5}" r="2.2" fill="rgba(255,255,255,.45)"/>` + NUM(x, yy+.5, num, 9, cols[num%5]==="#c9d3df"||cols[num%5]==="#d4a72c" ? "#3a2a10" : "#fff");
+  }});
+  let lights = ""; const r = rnd(11);
+  for (let i = 0; i < 40; i++) { const y = 50 + r()*215, hw = (y-28)/240*84; lights += `<circle cx="${90 + (r()*2-1)*hw}" cy="${y}" r=".9" fill="#ffe9a8"/>`; }
+  return svg(`<rect width="180" height="320" fill="url(#bg3)"/>${dots(40, 5, "rgba(255,255,255,.6)", 1.1, 200)}${TITLE("#ffe9a8", 18, 11)}
+    <polygon points="90,28 132,112 114,110 152,186 134,184 176,268 4,268 46,184 28,186 66,110 48,112" fill="#1f6b45"/>
+    <polygon points="90,28 132,112 114,110 152,186 134,184 176,268 90,268" fill="#185a3a"/>${lights}
+    <path d="M90 16 l3.5 8 8.5 .6 -6.5 5.5 2 8.4 -7.5 -4.6 -7.5 4.6 2 -8.4 -6.5 -5.5 8.5 -.6z" fill="#ffd24a"/>
+    ${g}
+    <rect x="82" y="268" width="16" height="16" fill="#5a3a22"/>
+    <ellipse cx="90" cy="306" rx="110" ry="20" fill="#eef1f5"/>
+    <rect x="30" y="276" width="24" height="20" fill="#c0392b"/><rect x="40" y="276" width="4" height="20" fill="#ffd24a"/>
+    <rect x="118" y="280" width="30" height="16" fill="#2b6cb0"/><rect x="131" y="280" width="4" height="16" fill="#fff"/>
+    <rect x="58" y="284" width="18" height="12" fill="#d4a72c"/><rect x="65" y="284" width="4" height="12" fill="#c0392b"/>`,
+    GLOW + `<linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d2a2a"/><stop offset="1" stop-color="#081a1c"/></linearGradient>`);
+}
+
+// 4 Welpen
+function puppy(cx, cy, s, tilt = 0, hat = true) {
+  let curls = "";
+  for (let a = 0; a < 360; a += 30) { const r = a * Math.PI / 180; curls += `<circle cx="${(Math.cos(r)*15).toFixed(1)}" cy="${(Math.sin(r)*14).toFixed(1)}" r="7" fill="#e3ad6a"/>`; }
+  return `<g transform="translate(${cx} ${cy}) rotate(${tilt}) scale(${s})">
+    <ellipse cx="-19" cy="6" rx="8" ry="15" fill="#c98d4c" transform="rotate(18 -19 6)"/>
+    <ellipse cx="19" cy="6" rx="8" ry="15" fill="#c98d4c" transform="rotate(-18 19 6)"/>
+    ${curls}<circle r="16" fill="#e3ad6a"/>
+    <ellipse cx="0" cy="7" rx="10.5" ry="8.5" fill="#f2cf9a"/>
+    <circle cx="-6.5" cy="-1" r="2.8" fill="#2b1a10"/><circle cx="6.5" cy="-1" r="2.8" fill="#2b1a10"/>
+    <circle cx="-5.6" cy="-2" r="1" fill="#fff"/><circle cx="7.4" cy="-2" r="1" fill="#fff"/>
+    <ellipse cx="-10" cy="5" rx="2.6" ry="1.6" fill="#f2a0a0" opacity=".7"/><ellipse cx="10" cy="5" rx="2.6" ry="1.6" fill="#f2a0a0" opacity=".7"/>
+    <ellipse cx="0" cy="5" rx="3.4" ry="2.5" fill="#3a2216"/>
+    <path d="M-3.5 8.5 Q0 11.5 3.5 8.5" fill="none" stroke="#3a2216" stroke-width="1"/>
+    <ellipse cx="0" cy="11.5" rx="2" ry="2.3" fill="#e8778a"/>
+    ${hat ? `<path d="M-15 -12 Q0 -18 15 -13 L9 -36 Q2 -30 -15 -12Z" fill="#c0392b"/><rect x="-17" y="-16" width="34" height="6" rx="3" fill="#fff" transform="rotate(-3)"/><circle cx="9" cy="-36" r="4.5" fill="#fff"/>` : ""}
+  </g>`;
+}
+function welpen() {
+  const cols = ["#e7b98a","#d98c7a","#9cc2ad","#e9cf8a"];
+  let g = "";
+  ORDER.forEach((n, i) => {
+    const x = 9 + (i % 4) * 42, y = 132 + Math.floor(i / 4) * 30, s = st(n);
+    if (s === "open") { g += `<rect x="${x}" y="${y}" width="36" height="26" rx="8" fill="#fff8ee" stroke="#e7b98a" stroke-width="1.5"/>` + puppy(x+18, y+14, .36, 0, false); return; }
+    const paw = `<g fill="rgba(255,255,255,.45)"><ellipse cx="${x+27}" cy="${y+17}" rx="3.2" ry="2.6"/><circle cx="${x+23.5}" cy="${y+12.5}" r="1.3"/><circle cx="${x+27}" cy="${y+11.2}" r="1.3"/><circle cx="${x+30.5}" cy="${y+12.5}" r="1.3"/></g>`;
+    g += `<rect x="${x}" y="${y}" width="36" height="26" rx="8" fill="${cols[n%4]}" ${s==="today"?'stroke="#c0392b" stroke-width="2.2"':''}/>${paw}` + NUM(x+12, y+13.5, n, 12, "#5a3420");
+  });
+  return svg(`<rect width="180" height="320" fill="url(#bg4)"/>${dots(30, 4, "rgba(255,255,255,.9)", 1.6)}${TITLE("#7a3b2a", 22)}
+    ${puppy(64, 84, .95, -8)}${puppy(114, 80, 1.05, 6)}
+    <path d="M28 98 Q90 92 152 98 L144 124 Q90 130 36 124Z" fill="#b5793f"/>
+    <path d="M32 106 Q90 101 148 106 M34 114 Q90 109 146 114" stroke="#8f5a2a" stroke-width="2" fill="none"/>
+    <path d="M28 98 Q90 92 152 98" stroke="#d39a5c" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M128 112 q6 -8 12 0 q6 8 12 0" stroke="#c0392b" stroke-width="3" fill="none"/>
+    ${g}`,
+    `<linearGradient id="bg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdeee2"/><stop offset="1" stop-color="#f3d3c1"/></linearGradient>`);
+}
+
+// 5 Stuttgarter Weihnachtsmarkt
+function markt() {
+  const roofs = ["#7a2e2a","#3d5a3a","#6b4a2a"];
+  const deco = (x, y, i) => [
+    `<polygon points="${x},${y-9} ${x-4},${y} ${x+4},${y}" fill="#3f8a55"/>`,
+    `<path d="M${x} ${y-9} l1.6 3.6 3.8 .3 -2.9 2.5 .9 3.8 -3.4 -2 -3.4 2 .9 -3.8 -2.9 -2.5 3.8 -.3z" fill="#ffd24a"/>`,
+    `<rect x="${x-1.5}" y="${y-8}" width="3" height="8" fill="#f4f1ea"/><ellipse cx="${x}" cy="${y-10}" rx="1.4" ry="2.2" fill="#ffb347"/>`,
+    `<circle cx="${x}" cy="${y-5}" r="3" fill="#f4f1ea"/><circle cx="${x}" cy="${y-9.5}" r="2" fill="#f4f1ea"/>`
+  ][i % 4];
+  let g = "";
+  ORDER.forEach((n, i) => {
+    const x = 4.5 + (i % 6) * 29, y = 112 + Math.floor(i / 6) * 50, s = st(n);
+    g += `<polygon points="${x-2},${y+16} ${x+13},${y+5} ${x+28},${y+16}" fill="${roofs[(n+i)%3]}"/>
+      <polygon points="${x+4},${y+11.6} ${x+13},${y+5} ${x+22},${y+11.6} ${x+13},${y+8}" fill="#f4f1ea"/>${deco(x+13, y+5, n+i)}
+      <rect x="${x}" y="${y+16}" width="26" height="30" fill="#8a5a33"/>
+      <path d="M${x} ${y+17} q3.25 3 6.5 0 t6.5 0 t6.5 0 t6.5 0" stroke="#ffe9a8" stroke-width="1" fill="none" stroke-dasharray="1 2"/>`;
+    if (s === "open") g += `<rect x="${x+3}" y="${y+21}" width="20" height="18" fill="url(#glow)"/>` + EMO(x+13, y+30, n, 11);
+    else g += `<rect x="${x+3}" y="${y+21}" width="20" height="18" fill="#4a2f1b" ${s==="today"?'stroke="#ffd98a" stroke-width="2"':''}/>` + NUM(x+13, y+30.5, n, 10.5, "#ffd98a");
+    g += `<rect x="${x+1}" y="${y+39}" width="24" height="3" fill="#6b4224"/>`;
+  });
+  let bulbs = "";
+  for (let i = 0; i < 18; i++) { const x = i * 10.6 + 2, y = 96 + Math.sin(i / 17 * Math.PI) * 8; bulbs += `<circle cx="${x}" cy="${y}" r="1.6" fill="${["#ffd24a","#ff7a6b","#9be7ff"][i%3]}"/>`; }
+  return svg(`<rect width="180" height="320" fill="url(#bg5)"/>${dots(30, 9, "rgba(255,255,255,.7)", 1, 90)}${TITLE("#ffe9a8", 20, 11)}
+    <g fill="#120f2a">
+      <rect x="20" y="62" width="22" height="48"/><polygon points="17,64 31,40 45,64"/>
+      <rect x="42" y="78" width="40" height="32"/>
+      <rect x="84" y="80" width="56" height="30"/><polygon points="84,82 112,62 140,82"/>
+      <rect x="114" y="46" width="18" height="64"/><polygon points="112,48 123,32 134,48"/><rect x="121" y="24" width="4" height="10"/>
+      <rect x="92" y="62" width="13" height="48"/><polygon points="90,64 98.5,48 107,64"/>
+      <rect x="150" y="70" width="22" height="40"/><polygon points="147,72 161,52 175,72"/>
+    </g>
+    <g fill="#ffd98a" opacity=".85"><rect x="27" y="74" width="3" height="5"/><rect x="34" y="90" width="3" height="5"/><rect x="121" y="58" width="3" height="6"/><rect x="157" y="84" width="3" height="5"/><rect x="60" y="88" width="3" height="5"/></g>
+    <path d="M0 96 Q90 112 180 96" stroke="#3a3260" stroke-width=".6" fill="none"/>${bulbs}${g}`,
+    GLOW + `<linearGradient id="bg5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2160"/><stop offset=".35" stop-color="#3a2253"/><stop offset="1" stop-color="#1a1428"/></linearGradient>`);
+}
+
+// 6 Fotowand
+function fotowand() {
+  const r = rnd(21), pins = ["#c0392b","#2e7d5b","#d4a72c","#2b6cb0"];
+  const scenes = [["#9ad0f5","#5fa86a"],["#ffc58a","#d9785b"],["#c9e4ff","#ffffff"],["#a3c4f3","#3f7fb5"],["#ffd6e0","#86b37a"]];
+  let g = "";
+  ORDER.forEach((n, i) => {
+    const x = 8 + (i % 4) * 42, y = 58 + Math.floor(i / 4) * 43, rot = ((r() * 2 - 1) * 6).toFixed(1), s = st(n);
+    let photo;
+    if (s === "open") { const [sky, land] = scenes[n % 5];
+      photo = `<rect x="${x+3}" y="${y+3}" width="30" height="27" fill="${sky}"/><circle cx="${x+25}" cy="${y+10}" r="3.5" fill="#fff3b0"/>
+        <path d="M${x+3} ${y+24} q8 -9 15 -2 q7 -7 15 0 V${y+30} H${x+3}Z" fill="${land}"/>`;
+    } else photo = `<rect x="${x+3}" y="${y+3}" width="30" height="27" fill="#3a3f4c"/>` + NUM(x+18, y+17, "?", 13, "#7d8596");
+    g += `<g transform="rotate(${rot} ${x+18} ${y+20})">
+      <rect x="${x}" y="${y}" width="36" height="40" fill="#fffdf8" ${s==="today"?'stroke="#ffd24a" stroke-width="2.5"':''}/>${photo}
+      ${NUM(x+18, y+35.5, n, 9, "#2a2a2a", "Caveat")}
+      <circle cx="${x+18}" cy="${y+1}" r="2.6" fill="${pins[(n+i)%4]}"/><circle cx="${x+17.2}" cy="${y+.2}" r=".9" fill="rgba(255,255,255,.6)"/></g>`;
+  });
+  let bulbs = "";
+  for (let i = 0; i < 12; i++) { const x = 6 + i * 15.3, y = 10 + Math.sin(i / 11 * Math.PI) * 9; bulbs += `<line x1="${x}" y1="${y}" x2="${x}" y2="${y+3}" stroke="#333" stroke-width=".8"/><ellipse cx="${x}" cy="${y+5}" rx="2" ry="2.8" fill="#ffe08a"/>`; }
+  return svg(`<rect width="180" height="320" fill="#c39a68"/>${dots(260, 13, "rgba(90,58,30,.35)", 1)}
+    <path d="M0 10 Q90 28 180 10" stroke="#333" stroke-width=".8" fill="none"/>${bulbs}
+    <text x="90" y="44" text-anchor="middle" font-family="Caveat, cursive" font-weight="600" font-size="17" fill="#3a2414">Für Mama, von Lenny</text>${g}`);
+}
+
+// 7 Geschenkeberg
+function geschenke() {
+  const boxes = [["#c0392b","#ffd24a"],["#2e7d5b","#f4f1ea"],["#f4f1ea","#c0392b"],["#2b6cb0","#ffd24a"],["#d4a72c","#c0392b"],["#8e3b6b","#f4f1ea"]];
+  const rows = [[6,26,36],[5,30,36],[5,30,34],[4,34,34],[3,38,34],[1,52,44]];
+  let g = "", k = 0, y = 302;
+  rows.forEach(([n, w, h]) => {
+    y -= h; const gap = 2.5, total = n * w + (n - 1) * gap;
+    for (let i = 0; i < n; i++) {
+      const x = 90 - total / 2 + i * (w + gap), num = n === 1 ? 24 : ORDER.filter(v => v !== 24)[k++], s = st(num);
+      const [c, rib] = boxes[(num + i) % 6];
+      if (s === "open") {
+        g += `<rect x="${x}" y="${y+5}" width="${w}" height="${h-5}" fill="url(#glow)"/><rect x="${x-1}" y="${y-1}" width="${w*.55}" height="5" fill="${c}" transform="rotate(-14 ${x} ${y})"/>` + EMO(x+w/2, y+h/2+3, num, 13);
+      } else {
+        g += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}" ${s==="today"?'stroke="#ffd98a" stroke-width="2.4"':''}/>
+          <rect x="${x+w/2-2}" y="${y}" width="4" height="${h}" fill="${rib}"/><rect x="${x}" y="${y+h/2-1.5}" width="${w}" height="3" fill="${rib}"/>
+          <circle cx="${x+w/2}" cy="${y+h/2}" r="${num===24?11:7.5}" fill="#fffdf8"/>` + NUM(x+w/2, y+h/2+.5, num, num===24?12:9, "#2a2a2a");
+      }
+      if (num === 24) g += `<ellipse cx="${x+w/2-8}" cy="${y-5}" rx="9" ry="5" fill="${rib}" transform="rotate(-20 ${x+w/2-8} ${y-5})"/><ellipse cx="${x+w/2+8}" cy="${y-5}" rx="9" ry="5" fill="${rib}" transform="rotate(20 ${x+w/2+8} ${y-5})"/><circle cx="${x+w/2}" cy="${y-3}" r="3.5" fill="${rib}"/>`;
+    }
+  });
+  return svg(`<rect width="180" height="320" fill="url(#bg7)"/>${dots(70, 17, "rgba(255,255,255,.6)", 1.2)}${TITLE("#ffe0b0", 26, 13)}
+    <ellipse cx="90" cy="312" rx="120" ry="16" fill="#f4f1ea"/>${g}`,
+    GLOW + `<linearGradient id="bg7" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a1424"/><stop offset="1" stop-color="#26070f"/></linearGradient>`);
+}
+
+const MOTIVE = [
+  ["Winternacht", winter, "Der erste Entwurf: Türchen in gemischter Reihenfolge, Schneefall, unten ein kleines Dorf.", ["schlicht", "zeitlos"]],
+  ["Lebkuchenhaus", lebkuchen, "Die Türchen sind Fenster mit Zuckerguss, die 24 sitzt oben im Giebel, die Haustür ist ein extra großes Türchen.", ["gemütlich", "verspielt"]],
+  ["Weihnachtsbaum", baum, "24 Kugeln am Baum, die geöffneten leuchten golden. Unten liegen die Geschenke.", ["klassisch", "festlich"]],
+  ["Welpen im Körbchen", welpen, "Zwei Goldendoodle-Welpen mit Mützen im Körbchen. Hinter jedem geöffneten Pfoten-Türchen schaut ein Welpe hervor.", ["zuckersüß", "Lieblings­kandidat?"]],
+  ["Stuttgarter Weihnachtsmarkt", markt, "Stiftskirche und Altes Schloss im Hintergrund, die Türchen sind 24 Buden mit den typisch geschmückten Dächern.", ["Heimat", "abendlich"]],
+  ["Fotowand", fotowand, "Eigene Idee: Polaroids an einer Pinnwand mit Lichterkette. Passt ideal, weil hinter vielen Türchen Fotos stecken.", ["persönlich", "für Fotos"]],
+  ["Geschenkeberg", geschenke, "Eigene Idee: ein gestapelter Berg aus Päckchen, ganz oben das große Geschenk für Heiligabend.", ["fröhlich", "farbig"]],
+];
+document.getElementById("grid").innerHTML = MOTIVE.map(([name, fn, text, tags], i) => `
+  <article class="card">
+    <div class="phone">${fn()}</div>
+    <div class="meta"><span class="nr">Motiv ${i + 1}</span><h2>${name}</h2><p>${text}</p>
+      <div class="tags">${tags.map(t => `<span>${t}</span>`).join("")}</div></div>
+  </article>`).join("");
+</script>
+</body></html>
