@@ -14,7 +14,7 @@ Ziel: Bis **Do, 26.11.** alle Aufnahmen im Kasten. Ein Nachmittag reicht, wenn a
 
 Oder Lenny erfindet einen eigenen. Eintragen in `index.html` bei `SECRET`.
 
-**2. Das Puzzlefoto.** Ein Lieblingsfoto von Lenny und Mama, **Querformat**, Gesichter eher mittig. Als `media/puzzle.jpg` speichern (ca. 1500 × 1000 Pixel reichen).
+**2. Das Puzzlefoto.** Ein Lieblingsfoto von Lenny und Mama, **Querformat**, Gesichter eher mittig. Als `assets/puzzle.jpg` speichern (ca. 1500 × 1000 Pixel reichen).
 
 ## Tipps für die Aufnahmen
 
@@ -54,10 +54,10 @@ Oder Lenny erfindet einen eigenen. Eintragen in `index.html` bei `SECRET`.
 | 24 | Text | Teaser, dann startet das Finale | |
 | Finale | Video | Das große Abschlussvideo, ca. 1 Minute, von Herzen. Läuft nach dem fertigen Puzzle | `finale.mp4` |
 
-Alle Dateien kommen in den Ordner `media/`. In `index.html` beim jeweiligen Tag `type` und `src` eintragen, zum Beispiel:
+Alle Dateien kommen in den Ordner `assets/`. In `index.html` beim jeweiligen Tag `type` und `src` eintragen, zum Beispiel:
 
 ```js
-3: { type: "video", src: "media/tag03.mp4", title: "Witz des Tages", text: "Hast du gelacht?" },
+3: { type: "video", src: "assets/tag03.mp4", title: "Witz des Tages", text: "Hast du gelacht?" },
 ```
 
 Fehlt eine Datei noch, zeigt der Kalender einfach nur den Text. Nichts geht kaputt.

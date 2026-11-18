@@ -263,7 +263,7 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
     <p class="status" id="status"></p>
   </header>
 
-  <!-- Nur zum Ausprobieren. Für Svenja DEMO = false setzen. -->
+  <!-- Nur mit ?demo im Link sichtbar: Datum simulieren -->
   <div class="demo" id="demo" hidden>
     <label for="demoDay"><span>Vorschau: Heute ist der</span><span id="demoLabel"></span></label>
     <input type="range" id="demoDay" min="0" max="25" value="10">
@@ -335,15 +335,15 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 <script>
 // ===================== Einstellungen =====================
 const YEAR = 2026;
-const DEMO = true;           // Datumsregler zum Ausprobieren. Für Svenja auf false stellen.
+const DEMO = new URLSearchParams(location.search).has("demo"); // Vorschau mit Datumsregler: Link mit ?demo öffnen
 const FRONT_DOOR = 6;        // Welcher Tag die große Haustür ist (24 ist immer der Giebel)
 const STORE_KEY = "svenja-advent-" + YEAR;
 
 // Puzzle und geheimer Satz
-const PUZZLE_PHOTO = "media/puzzle.jpg";   // Querformat 3:2. Fehlt die Datei, erscheint ein Platzhalter.
+const PUZZLE_PHOTO = "assets/puzzle.jpg";   // Querformat 3:2. Fehlt die Datei, erscheint ein Platzhalter.
 const SECRET = "ICH HAB DICH SO DOLL LIEB MAMA";   // Ideal: genau 24 Buchstaben (ohne Leerzeichen), einer pro Tag.
-const FINALE_VIDEO = "media/finale.mp4";   // Großes Abschlussvideo nach dem Puzzle. Fehlt die Datei, wird es einfach weggelassen.
-const MUSIC_FILE = "";                     // Leer = eingebaute Spieluhr ("Stille Nacht"). Oder z. B. "media/musik.mp3".
+const FINALE_VIDEO = "assets/finale.mp4";   // Großes Abschlussvideo nach dem Puzzle. Fehlt die Datei, wird es einfach weggelassen.
+const MUSIC_FILE = "";                     // Leer = eingebaute Spieluhr ("Stille Nacht"). Oder z. B. "assets/musik.mp3".
 
 // Inhalte. type: "text" | "hint" | "photo" | "video" | "audio"  (src = Dateiname für Foto, Video, Audio)
 const DAYS = {
@@ -546,7 +546,7 @@ function refresh() {
 function tap(b, n) {
   if (!isUnlocked(n)) {
     b.classList.remove("wiggle"); void b.offsetWidth; b.classList.add("wiggle");
-    toast(`Wuff! Nicht schummeln, Mama. Fenster ${n} geht erst am ${n}. Dezember auf.`);
+    toast(`Wuff! Noch nicht schummeln, Mama. Fenster ${n} geht erst am ${n}. Dezember auf.`);
     return;
   }
   const first = !opened.has(n);
@@ -581,7 +581,7 @@ function show(n, first = false) {
   if (d.type === "video") m = add("video", { src: d.src, controls: true, playsInline: true, preload: "metadata", className: "media" });
   if (d.type === "audio") m = add("audio", { src: d.src, controls: true, className: "media" });
   if (m) m.addEventListener("error", () => m.remove());   // Datei fehlt noch: Text reicht
-  if (d.text) add("p", { textContent: d.text, className: d.type === "hint" ? "hint" : "" });
+  if (d.text) add("p", { id: "cardText", textContent: d.text, className: d.type === "hint" ? "hint" : "" });
 
   // Gewinn: Puzzleteil + Buchstabe(n)
   const g = add("div", { className: "gain" }), { bx, by } = piecePos(PIECE_OF[n]);
