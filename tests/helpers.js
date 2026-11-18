@@ -9,6 +9,7 @@ async function openAt(page, isoDate, query = "") {
   await page.goto(APP + query, { waitUntil: "domcontentloaded" });
 }
 
-const door = (page, n) => page.locator(`.door[data-n="${n}"]`);
+// Alle Türchen (Fenster, Haustür, Giebel) haben die Klasse .win
+const door = (page, n) => page.locator(`.win[data-n="${n}"]`);
 
 module.exports = { APP, openAt, door };

@@ -6,7 +6,7 @@ Status: umgesetzt
 Mama öffnet auf dem Handy einen Link und kann ab dem 1. Dezember jeden Tag ein Türchen mit einer Botschaft von Lenny öffnen.
 
 ## Akzeptanzkriterien
-- [x] AK1: 24 Türchen, jede Zahl 1 bis 24 genau einmal, jedes mit Emoji, Titel und Text.
+- [x] AK1: 24 Türchen, jede Zahl 1 bis 24 genau einmal, jedes mit Welpe, Titel und Text. (Seit 001: Lebkuchenhaus-Look, Welpe statt Emoji.)
 - [x] AK2: Vor dem 1. Dezember sind alle Türchen zu; Antippen zeigt einen Hinweis statt des Inhalts.
 - [x] AK3: Am Tag X sind die Türchen 1 bis X offenbar, X+1 bis 24 gesperrt; Türchen X ist als "heute" markiert.
 - [x] AK4: Ein freigegebenes Türchen zeigt Datum, Titel und Text; Schließen blendet das wieder aus.

@@ -5,20 +5,22 @@ const { openAt, door } = require("./helpers");
 
 test("AK1: 24 Türchen mit vollständigen Inhalten", async ({ page }) => {
   await openAt(page, "2026-12-10T12:00:00");
-  await expect(page.locator(".door")).toHaveCount(24);
-  const data = await page.evaluate(() => ({ days: DAYS, layout: LAYOUT.map(([n]) => n) }));
-  expect([...data.layout].sort((a, b) => a - b)).toEqual(Array.from({ length: 24 }, (_, i) => i + 1));
+  await expect(page.locator(".win")).toHaveCount(24);
+  const nums = await page.locator(".win").evaluateAll(els => els.map(e => +e.dataset.n));
+  expect([...nums].sort((a, b) => a - b)).toEqual(Array.from({ length: 24 }, (_, i) => i + 1));
+  const days = await page.evaluate(() => DAYS);
   for (let n = 1; n <= 24; n++) {
-    const entry = data.days[n];
+    const entry = days[n];
     expect(entry, `Inhalt für Tag ${n}`).toBeTruthy();
-    expect(entry.length).toBeGreaterThanOrEqual(3);
-    entry.slice(0, 3).forEach(v => expect(String(v).trim(), `Tag ${n}`).not.toBe(""));
+    expect(String(entry.title).trim(), `Titel Tag ${n}`).not.toBe("");
+    expect(String(entry.text).trim(), `Text Tag ${n}`).not.toBe("");
   }
+  await expect(door(page, 1).locator(".pup")).toHaveCount(1);   // hinter jedem Türchen sitzt ein Welpe
 });
 
 test("AK2: vor dem 1. Dezember alles zu, Hinweis statt Inhalt", async ({ page }) => {
   await openAt(page, "2026-11-28T12:00:00");
-  await expect(page.locator(".door.locked")).toHaveCount(24);
+  await expect(page.locator(".win.locked")).toHaveCount(24);
   await door(page, 1).click();
   await expect(page.locator("#toast")).toContainText("Noch nicht schummeln");
   await expect(page.locator("#overlay")).toBeHidden();
@@ -35,7 +37,7 @@ test("AK3: am 5. Dezember sind 1 bis 5 frei, Rest gesperrt, 5 ist heute", async 
 
 test("AK4: Türchen öffnen zeigt Inhalt, Schließen blendet aus", async ({ page }) => {
   await openAt(page, "2026-12-05T08:00:00");
-  const [, title, text] = await page.evaluate(() => DAYS[3]);
+  const { title, text } = await page.evaluate(() => DAYS[3]);
   await door(page, 3).click();
   await expect(page.locator("#overlay")).toBeVisible();
   await expect(page.locator("#cardDay")).toHaveText("3. Dezember");
