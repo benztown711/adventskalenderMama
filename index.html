@@ -162,7 +162,7 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #2a3a55
     <p class="status" id="status"></p>
   </header>
 
-  <!-- Nur im Beispiel: Datum simulieren. Für die echte Version DEMO = false setzen. -->
+  <!-- Nur mit ?demo im Link sichtbar: Datum simulieren -->
   <div class="demo" id="demo" hidden>
     <label for="demoDay"><span>Vorschau: Heute ist der</span><span id="demoLabel"></span></label>
     <input type="range" id="demoDay" min="0" max="25" value="10">
@@ -198,7 +198,7 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #2a3a55
 <script>
 // ===== Einstellungen =====
 const YEAR = 2026;
-const DEMO = true;              // Beispielmodus mit Datumsregler. Für Svenja auf false stellen.
+const DEMO = new URLSearchParams(location.search).has("demo"); // Vorschau mit Datumsregler: Link mit ?demo öffnen
 const STORE_KEY = "svenja-advent-" + YEAR;
 
 // Beispielinhalte. Hier schreibt Lenny später seine eigenen Texte rein.
