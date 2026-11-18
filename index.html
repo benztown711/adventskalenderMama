@@ -176,9 +176,80 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 .toast svg { width: 42px; flex: none; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* ---------- Puzzle und geheimer Satz ---------- */
+.prize { position: relative; z-index: 1; background: var(--snow); color: #1d2a40; padding: 6px 16px 18px; margin-top: -2px; }
+.prize-in { max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; text-align: center; }
+.prize h2 { font-family: var(--font-display); font-weight: 600; font-size: 24px; margin: 0; }
+.prize .sub { margin: -6px 0 2px; color: #4b5874; font-size: 14px; line-height: 1.45; text-wrap: balance; }
+.board {
+  display: grid; grid-template-columns: repeat(6, 1fr); aspect-ratio: 3 / 2; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 0 0 4px var(--ginger), 0 12px 28px rgba(60,30,5,.22); background: #cfd9e8;
+}
+.pc { position: relative; background-image: var(--photo); background-size: 600% 400%; background-position: var(--bx) var(--by); }
+.pc::after {
+  content: attr(data-n); position: absolute; inset: 0; display: grid; place-items: center;
+  background: linear-gradient(140deg, #f1f4fa, #cdd8e8); color: #7d8ca8; font: 600 13px var(--font-display);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.85), inset -1px -1px 0 rgba(90,110,150,.18);
+  transition: opacity .7s ease, transform .7s cubic-bezier(.3,1.3,.5,1); transition-delay: var(--d, 0s);
+}
+.pc.got::after { opacity: 0; transform: scale(.4) rotate(14deg); }
+.pc.new { animation: pcpop 1s cubic-bezier(.3,1.5,.5,1) .35s both; z-index: 1; }
+@keyframes pcpop { 0% { transform: scale(1); } 40% { transform: scale(1.35); box-shadow: 0 0 0 3px var(--glow), 0 8px 18px rgba(0,0,0,.3); } 100% { transform: scale(1); } }
+.secret { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 16px; }
+.word { display: flex; gap: 3px; }
+.ch {
+  width: clamp(19px, 5.4vw, 25px); height: clamp(28px, 7.4vw, 34px); border-bottom: 3px solid #cbbba6;
+  display: grid; place-items: end center; padding-bottom: 3px;
+  font: 600 clamp(18px, 5.2vw, 23px)/1 var(--font-display); color: var(--ginger-dark);
+}
+.ch.got { border-color: var(--ginger); }
+.ch.new { animation: chdrop .7s cubic-bezier(.3,1.6,.5,1) .6s both; }
+@keyframes chdrop { 0% { transform: translateY(-26px); opacity: 0; } 100% { transform: none; opacity: 1; } }
+.prize .count { font-size: 13px; color: #5b6784; font-weight: 600; }
+.prize .replay { align-self: center; border: 0; background: var(--red); color: #fff; font: 800 15px var(--font-body); padding: 12px 26px; border-radius: 999px; cursor: pointer; }
+.prize .replay:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* Gewinn im Pop-up */
+.card .gain { display: flex; align-items: center; gap: 12px; text-align: left; background: #eef2f8; border-radius: 14px; padding: 10px 12px; font-size: 14px; line-height: 1.4; color: #34405a; }
+.gain .thumb { width: 52px; height: 52px; flex: none; border-radius: 8px; background-image: var(--photo); background-size: 600% 400%; background-position: var(--bx) var(--by); box-shadow: 0 0 0 2px var(--ginger); }
+.gain .letter { width: 40px; height: 52px; flex: none; border-radius: 8px; background: var(--snow); box-shadow: 0 0 0 2px var(--ginger); display: grid; place-items: center; font: 600 28px var(--font-display); color: var(--ginger-dark); }
+.gain b { color: #1d2a40; }
+
+/* ---------- Musik-Schalter ---------- */
+.sound {
+  position: fixed; z-index: 25; top: max(12px, env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px));
+  width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,217,138,.6); background: rgba(16,29,54,.75);
+  color: var(--glow); display: grid; place-items: center; cursor: pointer; padding: 0; backdrop-filter: blur(4px);
+}
+.sound svg { width: 22px; height: 22px; }
+.sound[aria-pressed="false"] { color: var(--snow-dim); border-color: rgba(195,203,224,.4); }
+.sound[aria-pressed="false"] .on, .sound[aria-pressed="true"] .off { display: none; }
+.sound:focus-visible { outline: 3px solid var(--glow); outline-offset: 3px; }
+
+/* ---------- Finale ---------- */
+.finale {
+  position: fixed; inset: 0; z-index: 22; overflow-y: auto; opacity: 0; transition: opacity .5s;
+  background: radial-gradient(120% 70% at 50% 0%, #2a4a85, var(--night) 70%);
+  padding: max(64px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.finale.show { opacity: 1; }
+.fin-in { max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; text-align: center; }
+.fin-in h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(30px, 9vw, 42px); line-height: 1.05; margin: 0; text-wrap: balance; }
+.fin-in h2 em { font-style: italic; font-weight: 500; color: var(--glow); }
+.fin-in .lead { margin: 4px 0 -4px; color: var(--snow-dim); font-size: 15px; }
+.finale .board { box-shadow: 0 0 0 5px var(--ginger), 0 0 50px 8px rgba(255,217,138,.35); }
+.finale .ch { color: var(--glow); border-color: rgba(255,217,138,.35); }
+.finale .ch.got { border-color: var(--glow); }
+.finale .media { width: 100%; border-radius: 14px; background: #000; }
+.finale .sig { font-family: var(--font-display); font-style: italic; color: var(--glow); font-size: 22px; margin: 0; }
+.finale button.close { align-self: center; border: 0; background: var(--snow); color: #1d2a40; font: 800 15px var(--font-body); padding: 12px 28px; border-radius: 999px; cursor: pointer; }
+.finale button.close:focus-visible { outline: 3px solid var(--glow); outline-offset: 3px; }
+.confetti { position: fixed; top: -20px; z-index: 24; width: 9px; height: 14px; pointer-events: none; border-radius: 2px; animation: fall var(--t) cubic-bezier(.25,.6,.5,1) var(--dl) forwards; }
+@keyframes fall { 0% { transform: translate(0,0) rotate(0); opacity: 1; } 100% { transform: translate(var(--dx), 110vh) rotate(var(--r)); opacity: .9; } }
+
 @media (prefers-reduced-motion: reduce) {
-  .sh, .overlay, .card, .toast, .inside .pup { transition: none; }
-  .win.today, .win.wiggle .sh, .bead, .smoke span, .head-l, .head-r, .blink, .wag, .spark { animation: none; }
+  .sh, .overlay, .card, .toast, .inside .pup, .pc::after, .finale { transition: none; }
+  .win.today, .win.wiggle .sh, .bead, .smoke span, .head-l, .head-r, .blink, .wag, .spark, .pc.new, .ch.new, .confetti { animation: none; }
 }
 </style>
 </head>
@@ -197,6 +268,8 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
     <label for="demoDay"><span>Vorschau: Heute ist der</span><span id="demoLabel"></span></label>
     <input type="range" id="demoDay" min="0" max="25" value="10">
     <button type="button" id="reset">Geöffnete Türchen zurücksetzen</button>
+    <button type="button" id="openAll">Alle Türchen bis heute öffnen</button>
+    <button type="button" id="testFinale">Finale testen</button>
   </div>
 
   <div class="house">
@@ -216,7 +289,36 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 
   <div class="yard" id="yard"></div>
 </div>
+
+<section class="prize" id="prize" aria-labelledby="prizeTitle">
+  <div class="prize-in">
+    <h2 id="prizeTitle">Dein Weihnachtspuzzle</h2>
+    <p class="sub">Jedes Türchen schenkt dir ein Puzzleteil und einen Buchstaben. Am Heiligabend ist das Bild komplett und du kannst Lennys geheime Botschaft lesen.</p>
+    <div class="board" id="board" role="img"></div>
+    <div class="secret" id="secret" role="img"></div>
+    <span class="count" id="count"></span>
+    <button type="button" class="replay" id="replay" hidden>Überraschung nochmal ansehen</button>
+  </div>
+</section>
 <footer>Jeden Tag im Dezember geht ein neues Fenster auf.</footer>
+
+<button type="button" class="sound" id="sound" aria-pressed="false" aria-label="Weihnachtsmusik">
+  <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+  <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M3 3l18 18"/></svg>
+</button>
+
+<div class="finale" id="finale" hidden role="dialog" aria-modal="true" aria-labelledby="finTitle">
+  <div class="fin-in">
+    <span class="eyebrow">24. Dezember</span>
+    <h2 id="finTitle">Frohe Weihnachten, <em>Mama!</em></h2>
+    <div class="board" id="finBoard" aria-hidden="true"></div>
+    <p class="lead">Lennys geheime Botschaft für dich:</p>
+    <div class="secret" id="finSecret"></div>
+    <div id="finMedia"></div>
+    <p class="sig">Dein Lenny</p>
+    <button type="button" class="close" id="finClose">Schließen</button>
+  </div>
+</div>
 
 <div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="cardTitle">
   <div class="card">
@@ -236,6 +338,12 @@ const YEAR = 2026;
 const DEMO = true;           // Datumsregler zum Ausprobieren. Für Svenja auf false stellen.
 const FRONT_DOOR = 6;        // Welcher Tag die große Haustür ist (24 ist immer der Giebel)
 const STORE_KEY = "svenja-advent-" + YEAR;
+
+// Puzzle und geheimer Satz
+const PUZZLE_PHOTO = "media/puzzle.jpg";   // Querformat 3:2. Fehlt die Datei, erscheint ein Platzhalter.
+const SECRET = "ICH HAB DICH SO DOLL LIEB MAMA";   // Ideal: genau 24 Buchstaben (ohne Leerzeichen), einer pro Tag.
+const FINALE_VIDEO = "media/finale.mp4";   // Großes Abschlussvideo nach dem Puzzle. Fehlt die Datei, wird es einfach weggelassen.
+const MUSIC_FILE = "";                     // Leer = eingebaute Spieluhr ("Stille Nacht"). Oder z. B. "media/musik.mp3".
 
 // Inhalte. type: "text" | "hint" | "photo" | "video" | "audio"  (src = Dateiname für Foto, Video, Audio)
 const DAYS = {
@@ -262,7 +370,7 @@ const DAYS = {
   21: { type: "text",  title: "Kürzester Tag", text: "Heute ist der kürzeste Tag des Jahres. Ab morgen wird es wieder heller." },
   22: { type: "hint",  title: "Ein Brief", text: "Unter deinem Kopfkissen wartet heute Abend ein Brief von mir." },
   23: { type: "text",  title: "Fast geschafft", text: "Nur noch einmal schlafen! Bist du auch so aufgeregt wie ich?" },
-  24: { type: "text",  title: "Frohe Weihnachten!", text: "Danke, dass du die beste Mama der Welt bist. Ich hab dich ganz doll lieb!" },
+  24: { type: "text",  title: "Heiligabend!", text: "Das letzte Puzzleteil ist da! Tipp unten auf den Knopf, dann siehst du, was ich dir die ganze Zeit sagen wollte." },
 };
 
 // Fenster-Reihenfolge im Haus (ohne Haustür und Giebel), 5 Reihen à 4 plus 2 neben der Tür
@@ -328,6 +436,71 @@ let demoDay = 10;
 let opened = load();
 function load() { try { return new Set(JSON.parse(localStorage.getItem(STORE_KEY) || "[]")); } catch { return new Set(); } }
 function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify([...opened])); } catch {} }
+const flag = (k, v) => { try { if (v === undefined) return localStorage.getItem(STORE_KEY + "-" + k) === "1"; localStorage.setItem(STORE_KEY + "-" + k, v ? "1" : "0"); } catch { return false; } };
+
+// ===================== Puzzle-Zuordnung =====================
+function shuffled(n, seed) {
+  const a = [...Array(n).keys()];
+  let s = seed;
+  const rnd = () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  for (let i = n - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+const PIECE_OF = [null, ...shuffled(24, 1224)];            // Tag -> Puzzleteil (0..23)
+const LETTERS = [...SECRET.replace(/\s+/g, "")];
+const LETTERS_OF = Array.from({ length: 25 }, () => []);  // Tag -> Buchstaben-Indizes
+(() => {
+  const order = shuffled(LETTERS.length, 2412);
+  order.forEach((li, i) => { const day = i === order.length - 1 ? 24 : (i % 23) + 1; LETTERS_OF[day].push(li); });
+})();
+const DAY_OF_LETTER = []; LETTERS_OF.forEach((ls, d) => ls.forEach(li => (DAY_OF_LETTER[li] = d)));
+const piecePos = p => ({ bx: (p % 6) / 5 * 100 + "%", by: Math.floor(p / 6) / 3 * 100 + "%" });
+
+// Foto laden, sonst Platzhalter
+(() => {
+  const ph = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"><defs><radialGradient id="g" cx=".5" cy=".3" r=".9"><stop offset="0" stop-color="#ffd98a"/><stop offset=".55" stop-color="#c77a3a"/><stop offset="1" stop-color="#5a2c10"/></radialGradient></defs><rect width="600" height="400" fill="url(#g)"/>${
+    Array.from({ length: 40 }, (_, i) => { const x = (i * 97) % 600, y = (i * 61) % 400, s = 8 + (i % 5) * 4; return `<path transform="translate(${x} ${y}) scale(${s / 20})" d="M0 6C-6-4-20 0-10 12L0 20 10 12C20 0 6-4 0 6Z" fill="#fff" opacity=".${2 + i % 4}"/>`; }).join("")
+  }<text x="300" y="190" text-anchor="middle" font-family="Georgia,serif" font-size="40" fill="#fff">Hier kommt</text><text x="300" y="240" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="40" fill="#fff">euer Familienfoto</text></svg>`;
+  const setPhoto = url => document.documentElement.style.setProperty("--photo", `url("${url}")`);
+  setPhoto("data:image/svg+xml," + encodeURIComponent(ph));
+  const img = new Image(); img.onload = () => setPhoto(PUZZLE_PHOTO); img.src = PUZZLE_PHOTO;
+})();
+
+function renderBoard(el, got, { fresh = 0, stagger = false } = {}) {
+  el.innerHTML = "";
+  const dayOfPiece = []; for (let d = 1; d <= 24; d++) dayOfPiece[PIECE_OF[d]] = d;
+  for (let p = 0; p < 24; p++) {
+    const d = dayOfPiece[p], s = document.createElement("span"), { bx, by } = piecePos(p);
+    s.className = "pc" + (got.has(d) && d !== fresh ? " got" : "") + (d === fresh ? " new" : "");
+    s.dataset.n = d; s.style.setProperty("--bx", bx); s.style.setProperty("--by", by);
+    if (stagger) s.style.setProperty("--d", (0.15 + ((p * 7) % 24) * 0.09).toFixed(2) + "s");
+    el.appendChild(s);
+    if (d === fresh) requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => s.classList.add("got"), 450)));
+  }
+}
+function renderSecret(el, got, { fresh = 0, stagger = false } = {}) {
+  el.innerHTML = ""; let li = 0;
+  SECRET.trim().split(/\s+/).forEach(w => {
+    const word = document.createElement("span"); word.className = "word";
+    [...w].forEach(() => {
+      const c = document.createElement("span"), d = DAY_OF_LETTER[li], has = got.has(d);
+      c.className = "ch" + (has ? " got" : "") + (has && (d === fresh || stagger) ? " new" : "");
+      if (stagger) c.style.animationDelay = (2.6 + li * 0.12).toFixed(2) + "s";
+      c.textContent = has ? LETTERS[li] : ""; word.appendChild(c); li++;
+    });
+    el.appendChild(word);
+  });
+}
+function renderPrize(fresh = 0) {
+  const n = opened.size;
+  renderBoard($("board"), opened, { fresh });
+  renderSecret($("secret"), opened, { fresh });
+  $("board").setAttribute("aria-label", `Puzzle: ${n} von 24 Teilen gefunden`);
+  const known = LETTERS.filter((_, i) => opened.has(DAY_OF_LETTER[i])).length;
+  $("secret").setAttribute("aria-label", `Geheimer Satz: ${known} von ${LETTERS.length} Buchstaben gefunden`);
+  $("count").textContent = n === 24 ? "Alle 24 Teile gefunden!" : `${n} von 24 Teilen gefunden`;
+  $("replay").hidden = n < 24;
+}
 function now() { if (!DEMO) return new Date(); return demoDay === 0 ? new Date(YEAR, 10, 28, 12) : new Date(YEAR, 11, demoDay, 12); }
 const unlockDate = n => new Date(YEAR, 11, n);
 const isUnlocked = n => now() >= unlockDate(n);
@@ -367,6 +540,7 @@ function refresh() {
   else s.textContent = "Frohe Weihnachten! Alle Fenster sind offen.";
   if (DEMO) $("demoLabel").textContent = demoDay === 0 ? "28. November" : demoDay + ". Dezember";
   save();
+  renderPrize();
 }
 
 function tap(b, n) {
@@ -377,8 +551,8 @@ function tap(b, n) {
   }
   const first = !opened.has(n);
   opened.add(n); refresh();
-  if (first) sparkle(b);
-  setTimeout(() => show(n), first ? 950 : 0);
+  if (first) { sparkle(b); Music.chime(); }
+  setTimeout(() => show(n, first), first ? 950 : 0);
 }
 function sparkle(el) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -393,29 +567,179 @@ function sparkle(el) {
   }
 }
 
-function show(n) {
+let shown = 0, shownFirst = false;
+function show(n, first = false) {
+  shown = n; shownFirst = first;
   const d = DAYS[n];
   $("peek").innerHTML = pup(FURS[n % 4], { hat: true });
   $("cardDay").textContent = n + ". Dezember";
   $("cardTitle").textContent = d.title;
   const box = $("cardBody"); box.innerHTML = "";
   const add = (tag, props) => { const e = document.createElement(tag); Object.assign(e, props); box.appendChild(e); return e; };
-  if (d.type === "photo") add("img", { src: d.src, alt: d.title, className: "media" });
-  if (d.type === "video") add("video", { src: d.src, controls: true, playsInline: true, className: "media" });
-  if (d.type === "audio") add("audio", { src: d.src, controls: true, className: "media" });
+  let m;
+  if (d.type === "photo") m = add("img", { src: d.src, alt: d.title, className: "media" });
+  if (d.type === "video") m = add("video", { src: d.src, controls: true, playsInline: true, preload: "metadata", className: "media" });
+  if (d.type === "audio") m = add("audio", { src: d.src, controls: true, className: "media" });
+  if (m) m.addEventListener("error", () => m.remove());   // Datei fehlt noch: Text reicht
   if (d.text) add("p", { textContent: d.text, className: d.type === "hint" ? "hint" : "" });
+
+  // Gewinn: Puzzleteil + Buchstabe(n)
+  const g = add("div", { className: "gain" }), { bx, by } = piecePos(PIECE_OF[n]);
+  g.innerHTML = `<span class="thumb" style="--bx:${bx};--by:${by}"></span>`;
+  LETTERS_OF[n].forEach(li => { const l = document.createElement("span"); l.className = "letter"; l.textContent = LETTERS[li]; g.appendChild(l); });
+  const t = document.createElement("span");
+  t.innerHTML = LETTERS_OF[n].length ? `<b>Neues Puzzleteil</b> und ein Buchstabe für Lennys geheimen Satz.` : `<b>Neues Puzzleteil</b> für dein Weihnachtspuzzle.`;
+  g.appendChild(t);
+
+  const last = first && opened.size === 24 && !flag("finale");
+  $("close").textContent = last ? "Zu deiner Überraschung" : "Schließen";
   const o = $("overlay"); o.hidden = false;
   requestAnimationFrame(() => o.classList.add("show"));
   $("close").focus();
 }
 function hide() {
-  const o = $("overlay"); o.classList.remove("show");
+  const o = $("overlay");
+  if (o.hidden) return;
+  o.classList.remove("show");
   o.querySelectorAll("video, audio").forEach(m => m.pause());
   setTimeout(() => (o.hidden = true), 250);
+  if (!shownFirst) return;
+  if (opened.size === 24 && !flag("finale")) { setTimeout(finale, 450); return; }
+  // Neues Teil im Puzzle zeigen
+  setTimeout(() => {
+    renderPrize(shown);
+    $("board").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  }, 300);
+  if (shown === 24) setTimeout(() => toast(`Noch ${24 - opened.size} Türchen zu, dann ist dein Puzzle komplett!`), 900);
 }
 $("close").addEventListener("click", hide);
 $("overlay").addEventListener("click", e => { if (e.target.id === "overlay") hide(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { hide(); hideFinale(); } });
+
+// ===================== Finale =====================
+function finale() {
+  flag("finale", true);
+  const all = new Set(Array.from({ length: 24 }, (_, i) => i + 1));
+  renderBoard($("finBoard"), new Set());
+  renderSecret($("finSecret"), new Set());
+  $("finSecret").setAttribute("aria-label", SECRET);
+  const fm = $("finMedia"); fm.innerHTML = "";
+  if (FINALE_VIDEO) {
+    const v = document.createElement("video");
+    Object.assign(v, { src: FINALE_VIDEO, controls: true, playsInline: true, preload: "metadata", className: "media" });
+    v.addEventListener("error", () => v.remove());
+    fm.appendChild(v);
+  }
+  const f = $("finale"); f.hidden = false; f.scrollTop = 0;
+  requestAnimationFrame(() => {
+    f.classList.add("show");
+    setTimeout(() => {   // Teile fallen nacheinander weg, dann kommen die Buchstaben
+      renderBoard($("finBoard"), new Set(), { stagger: true });
+      requestAnimationFrame(() => requestAnimationFrame(() => $("finBoard").querySelectorAll(".pc").forEach(p => p.classList.add("got"))));
+      renderSecret($("finSecret"), all, { stagger: true });
+    }, 400);
+  });
+  setTimeout(confetti, 2600);
+  Music.fanfare();
+  $("finClose").focus();
+  renderPrize();
+}
+function hideFinale() {
+  const f = $("finale"); if (f.hidden) return;
+  f.classList.remove("show"); f.querySelectorAll("video").forEach(v => v.pause());
+  setTimeout(() => (f.hidden = true), 500);
+}
+$("finClose").addEventListener("click", hideFinale);
+$("replay").addEventListener("click", finale);
+function confetti() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cols = ["#ffd98a", "#c0392b", "#2e7d5b", "#6fb7ff", "#ffffff", "#f08a7e"];
+  for (let i = 0; i < 110; i++) {
+    const c = document.createElement("span"); c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw"; c.style.background = cols[i % cols.length];
+    c.style.setProperty("--t", (2.8 + Math.random() * 2.4).toFixed(2) + "s");
+    c.style.setProperty("--dl", (Math.random() * 1.2).toFixed(2) + "s");
+    c.style.setProperty("--dx", (Math.random() * 160 - 80).toFixed(0) + "px");
+    c.style.setProperty("--r", (Math.random() * 1080 - 540).toFixed(0) + "deg");
+    if (i % 3 === 0) c.style.borderRadius = "50%";
+    document.body.appendChild(c); setTimeout(() => c.remove(), 7000);
+  }
+}
+
+// ===================== Musik (Spieluhr) =====================
+const Music = (() => {
+  const SOUND_KEY = STORE_KEY + "-sound";
+  let ctx, out, on = false, timer, nextT = 0, step = 0, file, ducked = false;
+  // "Stille Nacht" (gemeinfrei), Dauer in Achteln
+  const N = { C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392, A4: 440, B4: 493.88, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46 };
+  const M = [["G4",1.5],["A4",.5],["G4",1],["E4",3], ["G4",1.5],["A4",.5],["G4",1],["E4",3], ["D5",2],["D5",1],["B4",3], ["C5",2],["C5",1],["G4",3],
+             ["A4",2],["A4",1],["C5",1.5],["B4",.5],["A4",1], ["G4",1.5],["A4",.5],["G4",1],["E4",3], ["A4",2],["A4",1],["C5",1.5],["B4",.5],["A4",1], ["G4",1.5],["A4",.5],["G4",1],["E4",3],
+             ["D5",2],["D5",1],["F5",1.5],["D5",.5],["B4",1], ["C5",3],["E5",3], ["C5",1.5],["G4",.5],["E4",1],["G4",1.5],["F4",.5],["D4",1], ["C4",6], [null,6]];
+  const BASS = ["C","C","G","C","F","C","F","C","G","C","C","C","-"];   // je Takt (6 Achtel)
+  const BF = { C: 130.81, F: 174.61, G: 196 };
+  const E8 = .3;   // Sekunden pro Achtel
+
+  function init() {
+    if (ctx) return true;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
+    ctx = new AC(); out = ctx.createGain(); out.gain.value = .5;
+    const dl = ctx.createDelay(), fb = ctx.createGain(), lp = ctx.createBiquadFilter();
+    dl.delayTime.value = .27; fb.gain.value = .28; lp.type = "lowpass"; lp.frequency.value = 2600;
+    out.connect(ctx.destination); out.connect(dl); dl.connect(lp); lp.connect(fb); fb.connect(dl); lp.connect(ctx.destination);
+    return true;
+  }
+  function tone(f, t, vol = .16, len = 1.6) {
+    [[1, 1], [2, .25], [4.2, .06]].forEach(([mul, v]) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "sine"; o.frequency.value = f * mul;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol * v, t + .006); g.gain.exponentialRampToValueAtTime(.0001, t + len / mul ** .3);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + len + .1);
+    });
+  }
+  let bar = 0, inBar = 0;
+  function tick() {
+    while (nextT < ctx.currentTime + .6) {
+      const [n, dur] = M[step];
+      if (inBar === 0) { const b = BASS[bar % BASS.length]; if (BF[b]) { tone(BF[b], nextT, .07, 2.4); tone(BF[b] * 1.5, nextT + 3 * E8, .04, 1.8); } }
+      if (n) tone(N[n] * 2, nextT);
+      nextT += dur * E8; inBar += dur; if (inBar >= 6 - 1e-6) { inBar = 0; bar++; }
+      step = (step + 1) % M.length; if (step === 0) { bar = 0; inBar = 0; }
+    }
+  }
+  function start() {
+    if (ducked) return;
+    if (MUSIC_FILE) { file ||= Object.assign(new Audio(MUSIC_FILE), { loop: true, volume: .45 }); file.play().catch(() => {}); return; }
+    if (!init()) return; ctx.resume();
+    if (!timer) { nextT = ctx.currentTime + .1; step = 0; bar = 0; inBar = 0; timer = setInterval(tick, 120); tick(); }
+  }
+  function stop() {
+    if (file) file.pause();
+    clearInterval(timer); timer = null;
+    if (ctx) { out.gain.setTargetAtTime(0, ctx.currentTime, .05); setTimeout(() => { if (!timer && ctx) out.gain.value = .5; }, 400); }
+  }
+  function set(v) {
+    on = v; try { localStorage.setItem(SOUND_KEY, v ? "1" : "0"); } catch {}
+    $("sound").setAttribute("aria-pressed", v); $("sound").setAttribute("aria-label", v ? "Musik ausschalten" : "Weihnachtsmusik einschalten");
+    v ? start() : stop();
+  }
+  function fx(notes) { if (!on || !init()) return; ctx.resume(); const t = ctx.currentTime + .02; notes.forEach(([f, dt, v]) => tone(f, t + dt, v ?? .13, 1.4)); }
+  // Lennys Videos und Sprachnachrichten haben Vorrang
+  document.addEventListener("play", e => { if (e.target.matches("video, audio")) { ducked = true; stop(); } }, true);
+  ["pause", "ended"].forEach(ev => document.addEventListener(ev, e => {
+    if (e.target.matches("video, audio")) { ducked = false; if (on) start(); }
+  }, true));
+  $("sound").addEventListener("click", () => set(!on));
+  let pref = false; try { pref = localStorage.getItem(SOUND_KEY) === "1"; } catch {}
+  if (pref) {   // Browser erlauben Ton erst nach einer Berührung
+    on = true; $("sound").setAttribute("aria-pressed", "true"); $("sound").setAttribute("aria-label", "Musik ausschalten");
+    const go = e => { if (e.target.closest("#sound")) return; if (on) start(); removeEventListener("pointerdown", go, true); };
+    addEventListener("pointerdown", go, true);
+  }
+  return {
+    chime: () => fx([[1567.98, 0], [2093, .08], [2637, .16], [3136, .24, .09]]),
+    fanfare: () => fx([[1046.5, 0], [1318.5, .15], [1568, .3], [2093, .45, .16], [1568, 1.0, .1], [2093, 1.15, .14], [2637, 1.3, .16]]),
+  };
+})();
 
 let toastTimer;
 function toast(msg) {
@@ -427,7 +751,9 @@ function toast(msg) {
 if (DEMO) {
   $("demo").hidden = false;
   $("demoDay").addEventListener("input", e => { demoDay = +e.target.value; refresh(); });
-  $("reset").addEventListener("click", () => { opened.clear(); refresh(); });
+  $("reset").addEventListener("click", () => { opened.clear(); flag("finale", false); refresh(); });
+  $("openAll").addEventListener("click", () => { for (let n = 1; n <= 24; n++) if (isUnlocked(n)) opened.add(n); refresh(); });
+  $("testFinale").addEventListener("click", finale);
   if (!opened.size) [1,2,3,4,6,8].forEach(n => opened.add(n));
 }
 build();
