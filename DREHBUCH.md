@@ -14,7 +14,9 @@ Ziel: Bis **Do, 26.11.** alle Aufnahmen im Kasten. Ein Nachmittag reicht, wenn a
 
 Oder Lenny erfindet einen eigenen. Eintragen in `index.html` bei `SECRET`.
 
-**2. Das Puzzlefoto.** Ein Lieblingsfoto von Lenny und Mama, **Querformat**, Gesichter eher mittig. Als `assets/puzzle.jpg` speichern (ca. 1500 × 1000 Pixel reichen).
+**2. Lennys Handschrift.** Lenny schreibt den Satz auf weißes Papier: dicker schwarzer Filzstift, jeder Buchstabe groß in ein eigenes Kästchen (ca. 3 × 3 cm), mit Abstand. Doppelte Buchstaben jedes Mal neu schreiben. Bei Tageslicht von oben ohne Schatten fotografieren und an Claude schicken; die Buchstaben werden ausgeschnitten und als `assets/schrift/01.png`, `02.png` ... abgelegt.
+
+**3. Das Puzzlefoto.** Ein Lieblingsfoto von Lenny und Mama, **Querformat**, Gesichter eher mittig. Als `assets/puzzle.jpg` speichern (ca. 1500 × 1000 Pixel reichen).
 
 ## Tipps für die Aufnahmen
 
