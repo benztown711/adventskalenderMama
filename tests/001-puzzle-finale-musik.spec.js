@@ -99,8 +99,7 @@ test("AK7: Musik-Schalter, aus als Standard, bleibt gespeichert", async ({ page 
 test("AK8: fehlende Medien ohne sichtbare Fehler", async ({ page }) => {
   await openAt(page, "2026-12-10T12:00:00");
   // Platzhalterbild fürs Puzzle ist gesetzt
-  const photo = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--photo"));
-  expect(photo).toContain("url(");
+  await expect(page.locator("#board image.photo")).toHaveAttribute("href", /^data:image\/svg\+xml/);
   // Ein Video-Türchen mit fehlender Datei zeigt trotzdem den Text, ohne kaputtes Video
   await page.evaluate(() => { DAYS[5] = { type: "video", src: "assets/gibtsnicht.mp4", title: "Test", text: "Nur Text" }; });
   await door(page, 5).click();

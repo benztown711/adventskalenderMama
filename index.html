@@ -6,7 +6,7 @@
 <title>Svenjas Adventskalender</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="#101d36">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&family=Nunito:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&family=Nunito:wght@400;600;800&family=Gochi+Hand&display=swap">
 <style>
 /* Layout: Lebkuchenhaus in einer Schneenacht. Fenster und Haustür sind die Türchen, die 24 sitzt im Giebel. Davor ein Körbchen mit Welpen. */
 :root {
@@ -26,6 +26,10 @@
   --ink: #2a1a10;
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Nunito", system-ui, sans-serif;
+  --font-hand: "Gochi Hand", "Comic Sans MS", cursive;   /* Lennys Stimme */
+  --paper: #fbf6ec;
+  --ink-strong: #1d2a40;
+  --ink-soft: #4b5874;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -43,7 +47,7 @@ body {
   padding-block: 24px 0; display: flex; flex-direction: column; gap: 14px;
 }
 header { text-align: center; display: flex; flex-direction: column; gap: 4px; }
-.eyebrow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--glow); font-weight: 800; }
+.dedication { margin: 2px 0 0; font: 25px/1.1 var(--font-hand); color: var(--glow); transform: rotate(-2deg); }
 h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(28px, 8.5vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; }
 h1 em { font-style: italic; font-weight: 500; color: var(--glow); }
 .status { color: var(--snow-dim); font-size: 15px; margin: 2px 0 0; min-height: 1.4em; }
@@ -137,7 +141,8 @@ h1 em { font-style: italic; font-weight: 500; color: var(--glow); }
 footer { position: relative; z-index: 1; background: var(--snow); color: #34405a; text-align: center; padding: 2px 16px calc(24px + env(safe-area-inset-bottom, 0px)); font-size: 13px; margin-top: -2px; }
 
 /* ---------- Funkeln beim Öffnen ---------- */
-.spark { position: fixed; z-index: 15; pointer-events: none; font-size: 14px; color: var(--glow); left: 0; top: 0; animation: spark .9s ease-out forwards; }
+.spark svg { display: block; width: 100%; height: 100%; }
+.spark { position: fixed; z-index: 15; pointer-events: none; width: 15px; height: 15px; color: var(--glow); left: 0; top: 0; animation: spark .9s ease-out forwards; }
 @keyframes spark { 0% { transform: translate(var(--x0), var(--y0)) scale(.4); opacity: 1; } 100% { transform: translate(var(--x1), var(--y1)) scale(1.1) rotate(160deg); opacity: 0; } }
 
 /* ---------- Pop-up ---------- */
@@ -148,28 +153,28 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 }
 .overlay.show { opacity: 1; }
 .card {
-  position: relative; width: min(100%, 400px); background: var(--snow); color: #1d2a40; border-radius: 20px;
+  position: relative; width: min(100%, 400px); background: var(--snow); color: var(--ink-strong); border-radius: 20px;
   padding: 58px 22px 20px; display: flex; flex-direction: column; gap: 10px; text-align: center;
   box-shadow: 0 0 0 4px var(--ginger), 0 22px 60px rgba(0,0,0,.5);
-  transform: translateY(18px) scale(.94); transition: transform .35s cubic-bezier(.3,1.4,.5,1);
+  transform: translateY(18px) scale(.96); transition: transform .4s cubic-bezier(.16,1,.3,1);
 }
 .card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 12px; border-radius: 20px 20px 0 0;
   background: radial-gradient(circle at 50% 100%, var(--ginger) 5px, transparent 5.5px) 0 0 / 14px 12px repeat-x; opacity: .35; }
 .overlay.show .card { transform: none; }
 .card .peek { position: absolute; left: 50%; top: -52px; width: 104px; transform: translateX(-50%); }
-.card .day { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--red); font-weight: 800; }
+.card .day { position: absolute; top: 18px; right: 20px; font: 19px/1 var(--font-hand); color: var(--red); transform: rotate(3deg); }
 .card h2 { font-family: var(--font-display); font-weight: 600; font-size: 26px; margin: 0; text-wrap: balance; }
 .card p { margin: 0; line-height: 1.55; font-size: 16px; }
 .card .media { width: 100%; border-radius: 12px; display: block; background: #e7e1d6; }
 .card .hint { background: #fff1d6; border: 2px dashed var(--gold); border-radius: 12px; padding: 12px; font-weight: 600; }
-.card .sig { font-family: var(--font-display); font-style: italic; color: var(--green); font-size: 18px; }
+.card .sig { font: 26px/1 var(--font-hand); color: var(--green); margin: 2px 0 0; transform: rotate(-2deg); }
 .card button { margin-top: 6px; align-self: center; border: 0; background: var(--green); color: var(--snow); font: 800 15px var(--font-body); padding: 12px 28px; border-radius: 999px; cursor: pointer; }
 .card button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 .toast {
   position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 30;
   transform: translate(-50%, 20px); opacity: 0; transition: .25s; pointer-events: none;
-  background: var(--snow); color: #1d2a40; padding: 10px 16px 10px 10px; border-radius: 14px;
+  background: var(--snow); color: var(--ink-strong); padding: 10px 16px 10px 10px; border-radius: 14px;
   font-weight: 600; font-size: 15px; width: max-content; max-width: calc(100% - 32px);
   display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.4);
 }
@@ -177,31 +182,31 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 /* ---------- Puzzle und geheimer Satz ---------- */
-.prize { position: relative; z-index: 1; background: var(--snow); color: #1d2a40; padding: 6px 16px 18px; margin-top: -2px; }
+.prize { position: relative; z-index: 1; background: var(--snow); color: var(--ink-strong); padding: 6px 16px 18px; margin-top: -2px; }
 .prize-in { max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; text-align: center; }
 .prize h2 { font-family: var(--font-display); font-weight: 600; font-size: 24px; margin: 0; }
-.prize .sub { margin: -6px 0 2px; color: #4b5874; font-size: 14px; line-height: 1.45; text-wrap: balance; }
-.board {
-  display: grid; grid-template-columns: repeat(6, 1fr); aspect-ratio: 3 / 2; border-radius: 14px; overflow: hidden;
-  box-shadow: 0 0 0 4px var(--ginger), 0 12px 28px rgba(60,30,5,.22); background: #cfd9e8;
-}
-.pc { position: relative; background-image: var(--photo); background-size: 600% 400%; background-position: var(--bx) var(--by); }
-.pc::after {
-  content: attr(data-n); position: absolute; inset: 0; display: grid; place-items: center;
-  background: linear-gradient(140deg, #f1f4fa, #cdd8e8); color: #7d8ca8; font: 600 13px var(--font-display);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.85), inset -1px -1px 0 rgba(90,110,150,.18);
-  transition: opacity .7s ease, transform .7s cubic-bezier(.3,1.3,.5,1); transition-delay: var(--d, 0s);
-}
-.pc.got::after { opacity: 0; transform: scale(.4) rotate(14deg); }
-.pc.new { animation: pcpop 1s cubic-bezier(.3,1.5,.5,1) .35s both; z-index: 1; }
-@keyframes pcpop { 0% { transform: scale(1); } 40% { transform: scale(1.35); box-shadow: 0 0 0 3px var(--glow), 0 8px 18px rgba(0,0,0,.3); } 100% { transform: scale(1); } }
+.prize .sub { margin: -6px 0 2px; color: var(--ink-soft); font-size: 14px; line-height: 1.45; text-wrap: balance; }
+.board { position: relative; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 4px var(--ginger), 0 12px 28px rgba(60,30,5,.22); background: var(--ginger-dark); }
+.board svg { display: block; width: 100%; height: auto; }
+.board .seams { fill: none; stroke: rgba(255,250,240,.55); stroke-width: 1.4; transition: opacity 1.4s ease; }
+.board.done .seams { opacity: 0; }
+.pc { transform-box: fill-box; transform-origin: center; transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); transition-delay: var(--d, 0s); }
+.pc .cover { fill: var(--c); stroke: var(--icing); stroke-width: 2.4; stroke-linejoin: round; }
+.pc text { font: 600 34px var(--font-display); fill: #fff; text-anchor: middle; paint-order: stroke; stroke: rgba(0,0,0,.18); stroke-width: 3; }
+.pc.got { opacity: 0; transform: translateY(-14px) scale(1.18) rotate(6deg); pointer-events: none; }
+.pc.new:not(.got) { animation: pcpop .48s cubic-bezier(.16,1,.3,1); }
+@keyframes pcpop { 50% { transform: scale(1.1); filter: drop-shadow(0 0 8px var(--glow)); } }
+.board .flash { fill: none; stroke: var(--glow); stroke-width: 5; stroke-linejoin: round; opacity: 0; animation: flash 2s ease .5s; }
+@keyframes flash { 20%, 60% { opacity: 1; } 100% { opacity: 0; } }
 .secret { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 16px; }
 .word { display: flex; gap: 3px; }
 .ch {
   width: clamp(19px, 5.4vw, 25px); height: clamp(28px, 7.4vw, 34px); border-bottom: 3px solid #cbbba6;
   display: grid; place-items: end center; padding-bottom: 3px;
-  font: 600 clamp(18px, 5.2vw, 23px)/1 var(--font-display); color: var(--ginger-dark);
+  font: clamp(22px, 6vw, 28px)/1 var(--font-hand); color: var(--ginger-dark);
+  background: center 70% / contain no-repeat;
 }
+.ch.hw, .letter.hw { color: transparent; mix-blend-mode: multiply; }
 .ch.got { border-color: var(--ginger); }
 .ch.new { animation: chdrop .7s cubic-bezier(.3,1.6,.5,1) .6s both; }
 @keyframes chdrop { 0% { transform: translateY(-26px); opacity: 0; } 100% { transform: none; opacity: 1; } }
@@ -209,11 +214,12 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 .prize .replay { align-self: center; border: 0; background: var(--red); color: #fff; font: 800 15px var(--font-body); padding: 12px 26px; border-radius: 999px; cursor: pointer; }
 .prize .replay:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
-/* Gewinn im Pop-up */
-.card .gain { display: flex; align-items: center; gap: 12px; text-align: left; background: #eef2f8; border-radius: 14px; padding: 10px 12px; font-size: 14px; line-height: 1.4; color: #34405a; }
-.gain .thumb { width: 52px; height: 52px; flex: none; border-radius: 8px; background-image: var(--photo); background-size: 600% 400%; background-position: var(--bx) var(--by); box-shadow: 0 0 0 2px var(--ginger); }
-.gain .letter { width: 40px; height: 52px; flex: none; border-radius: 8px; background: var(--snow); box-shadow: 0 0 0 2px var(--ginger); display: grid; place-items: center; font: 600 28px var(--font-display); color: var(--ginger-dark); }
-.gain b { color: #1d2a40; }
+/* P.S. im Pop-up: Puzzleteil und Buchstabe des Tages */
+.card .gain { display: flex; align-items: center; gap: 12px; text-align: left; padding-top: 12px; border-top: 2px dashed rgba(168,100,44,.3); }
+.gain .thumb { width: 64px; height: 64px; flex: none; overflow: visible; filter: drop-shadow(0 3px 4px rgba(60,30,5,.3)); }
+.gain .thumb .edge { fill: none; stroke: var(--icing); stroke-width: 3; }
+.gain .letter { width: 40px; height: 52px; flex: none; border-radius: 8px; background: var(--paper) center / 80% no-repeat; box-shadow: 0 0 0 2px var(--ginger); display: grid; place-items: center; font: 32px var(--font-hand); color: var(--ginger-dark); }
+.gain p { margin: 0; font-size: 14px; line-height: 1.4; color: var(--ink-soft); }
 
 /* ---------- Musik-Schalter ---------- */
 .sound {
@@ -224,6 +230,7 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 .sound svg { width: 22px; height: 22px; }
 .sound[aria-pressed="false"] { color: var(--snow-dim); border-color: rgba(195,203,224,.4); }
 .sound[aria-pressed="false"] .on, .sound[aria-pressed="true"] .off { display: none; }
+.sound svg { display: block; }
 .sound:focus-visible { outline: 3px solid var(--glow); outline-offset: 3px; }
 
 /* ---------- Finale ---------- */
@@ -236,20 +243,26 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 .fin-in { max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; text-align: center; }
 .fin-in h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(30px, 9vw, 42px); line-height: 1.05; margin: 0; text-wrap: balance; }
 .fin-in h2 em { font-style: italic; font-weight: 500; color: var(--glow); }
-.fin-in .lead { margin: 4px 0 -4px; color: var(--snow-dim); font-size: 15px; }
+.fin-pups { display: flex; justify-content: center; gap: 4px; margin: -6px 0 -40px; position: relative; z-index: 1; }
+.fin-pups .pup { width: 92px; }
+.fin-pups .pup:nth-child(2) { width: 104px; margin-top: -8px; }
+.note { position: relative; z-index: 2; background: var(--paper); color: var(--ink-strong); border-radius: 6px; padding: 18px 16px 16px; transform: rotate(-1.2deg);
+  box-shadow: 0 14px 30px rgba(0,0,0,.35); display: flex; flex-direction: column; gap: 12px;
+  background-image: repeating-linear-gradient(transparent 0 33px, rgba(47,108,176,.13) 33px 34px); }
+.note .lead { margin: 0; font: 22px/1.1 var(--font-hand); color: var(--ink-soft); }
 .finale .board { box-shadow: 0 0 0 5px var(--ginger), 0 0 50px 8px rgba(255,217,138,.35); }
-.finale .ch { color: var(--glow); border-color: rgba(255,217,138,.35); }
-.finale .ch.got { border-color: var(--glow); }
+.finale .ch { font-size: clamp(26px, 7vw, 32px); width: clamp(20px, 5.8vw, 27px); height: clamp(32px, 8.4vw, 40px); }
 .finale .media { width: 100%; border-radius: 14px; background: #000; }
-.finale .sig { font-family: var(--font-display); font-style: italic; color: var(--glow); font-size: 22px; margin: 0; }
-.finale button.close { align-self: center; border: 0; background: var(--snow); color: #1d2a40; font: 800 15px var(--font-body); padding: 12px 28px; border-radius: 999px; cursor: pointer; }
+.finale .sig { font: 28px/1 var(--font-hand); color: var(--green); margin: 0; align-self: flex-end; transform: rotate(-3deg); }
+body.fin-open #snow { z-index: 23; }
+.finale button.close { align-self: center; border: 0; background: var(--snow); color: var(--ink-strong); font: 800 15px var(--font-body); padding: 12px 28px; border-radius: 999px; cursor: pointer; }
 .finale button.close:focus-visible { outline: 3px solid var(--glow); outline-offset: 3px; }
 .confetti { position: fixed; top: -20px; z-index: 24; width: 9px; height: 14px; pointer-events: none; border-radius: 2px; animation: fall var(--t) cubic-bezier(.25,.6,.5,1) var(--dl) forwards; }
 @keyframes fall { 0% { transform: translate(0,0) rotate(0); opacity: 1; } 100% { transform: translate(var(--dx), 110vh) rotate(var(--r)); opacity: .9; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .sh, .overlay, .card, .toast, .inside .pup, .pc::after, .finale { transition: none; }
-  .win.today, .win.wiggle .sh, .bead, .smoke span, .head-l, .head-r, .blink, .wag, .spark, .pc.new, .ch.new, .confetti { animation: none; }
+  .sh, .overlay, .card, .toast, .inside .pup, .pc, .seams, .finale { transition: none; }
+  .win.today, .win.wiggle .sh, .bead, .smoke span, .head-l, .head-r, .blink, .wag, .spark, .pc.new, .ch.new, .confetti, .board .flash { animation: none; }
 }
 </style>
 </head>
@@ -258,8 +271,8 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 
 <div class="wrap">
   <header>
-    <span class="eyebrow">Von Lenny für Mama</span>
     <h1>Svenjas <em>Advents&shy;kalender</em></h1>
+    <p class="dedication">von Lenny, für dich, Mama</p>
     <p class="status" id="status"></p>
   </header>
 
@@ -292,8 +305,8 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 
 <section class="prize" id="prize" aria-labelledby="prizeTitle">
   <div class="prize-in">
-    <h2 id="prizeTitle">Dein Weihnachtspuzzle</h2>
-    <p class="sub">Jedes Türchen schenkt dir ein Puzzleteil und einen Buchstaben. Am Heiligabend ist das Bild komplett und du kannst Lennys geheime Botschaft lesen.</p>
+    <h2 id="prizeTitle">Mein Puzzle für dich</h2>
+    <p class="sub">Hinter jedem Türchen steckt ein Puzzleteil und ein Buchstabe. An Heiligabend siehst du das ganze Bild und kannst meinen geheimen Satz lesen.</p>
     <div class="board" id="board" role="img"></div>
     <div class="secret" id="secret" role="img"></div>
     <span class="count" id="count"></span>
@@ -302,20 +315,22 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
 </section>
 <footer>Jeden Tag im Dezember geht ein neues Fenster auf.</footer>
 
-<button type="button" class="sound" id="sound" aria-pressed="false" aria-label="Weihnachtsmusik">
+<button type="button" class="sound" id="sound" aria-pressed="false" aria-label="Weihnachtsmusik" title="Weihnachtsmusik">
   <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
   <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M3 3l18 18"/></svg>
 </button>
 
 <div class="finale" id="finale" hidden role="dialog" aria-modal="true" aria-labelledby="finTitle">
   <div class="fin-in">
-    <span class="eyebrow">24. Dezember</span>
     <h2 id="finTitle">Frohe Weihnachten, <em>Mama!</em></h2>
     <div class="board" id="finBoard" aria-hidden="true"></div>
-    <p class="lead">Lennys geheime Botschaft für dich:</p>
-    <div class="secret" id="finSecret"></div>
+    <div class="fin-pups" id="finPups" aria-hidden="true"></div>
+    <div class="note">
+      <p class="lead">Mein geheimer Satz für dich:</p>
+      <div class="secret" id="finSecret" role="img"></div>
+      <p class="sig">Dein Lenny</p>
+    </div>
     <div id="finMedia"></div>
-    <p class="sig">Dein Lenny</p>
     <button type="button" class="close" id="finClose">Schließen</button>
   </div>
 </div>
@@ -327,6 +342,7 @@ footer { position: relative; z-index: 1; background: var(--snow); color: #34405a
     <h2 id="cardTitle"></h2>
     <div id="cardBody" style="display:flex;flex-direction:column;gap:10px"></div>
     <p class="sig">Dein Lenny</p>
+    <div class="gain" id="cardGain"></div>
     <button type="button" id="close">Schließen</button>
   </div>
 </div>
@@ -341,6 +357,7 @@ const STORE_KEY = "svenja-advent-" + YEAR;
 
 // Puzzle und geheimer Satz
 const PUZZLE_PHOTO = "assets/puzzle.jpg";   // Querformat 3:2. Fehlt die Datei, erscheint ein Platzhalter.
+const HANDWRITING = "assets/schrift/";     // Lennys Buchstaben als 01.png, 02.png ... Fehlen sie, gibt es eine Handschrift-Schrift.
 const SECRET = "ICH HAB DICH SO DOLL LIEB MAMA";   // Ideal: genau 24 Buchstaben (ohne Leerzeichen), einer pro Tag.
 const FINALE_VIDEO = "assets/finale.mp4";   // Großes Abschlussvideo nach dem Puzzle. Fehlt die Datei, wird es einfach weggelassen.
 const MUSIC_FILE = "";                     // Leer = eingebaute Spieluhr ("Stille Nacht"). Oder z. B. "assets/musik.mp3".
@@ -370,7 +387,8 @@ const DAYS = {
   21: { type: "text",  title: "Kürzester Tag", text: "Heute ist der kürzeste Tag des Jahres. Ab morgen wird es wieder heller." },
   22: { type: "hint",  title: "Ein Brief", text: "Unter deinem Kopfkissen wartet heute Abend ein Brief von mir." },
   23: { type: "text",  title: "Fast geschafft", text: "Nur noch einmal schlafen! Bist du auch so aufgeregt wie ich?" },
-  24: { type: "text",  title: "Heiligabend!", text: "Das letzte Puzzleteil ist da! Tipp unten auf den Knopf, dann siehst du, was ich dir die ganze Zeit sagen wollte." },
+  24: { type: "text",  title: "Heiligabend!", text: "Das letzte Puzzleteil ist da! Tipp unten auf den Knopf, dann siehst du, was ich dir die ganze Zeit sagen wollte.",
+        textEarly: "Heute ist Heiligabend! Ein paar Türchen hast du noch nicht aufgemacht. Wenn alle offen sind, wartet meine Überraschung auf dich." },
 };
 
 // Fenster-Reihenfolge im Haus (ohne Haustür und Giebel), 5 Reihen à 4 plus 2 neben der Tür
@@ -439,10 +457,12 @@ function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify([...opene
 const flag = (k, v) => { try { if (v === undefined) return localStorage.getItem(STORE_KEY + "-" + k) === "1"; localStorage.setItem(STORE_KEY + "-" + k, v ? "1" : "0"); } catch { return false; } };
 
 // ===================== Puzzle-Zuordnung =====================
-function shuffled(n, seed) {
-  const a = [...Array(n).keys()];
+function rng(seed) {
   let s = seed;
-  const rnd = () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+function shuffled(n, seed) {
+  const a = [...Array(n).keys()], rnd = rng(seed);
   for (let i = n - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
   return a;
 }
@@ -454,29 +474,79 @@ const LETTERS_OF = Array.from({ length: 25 }, () => []);  // Tag -> Buchstaben-I
   order.forEach((li, i) => { const day = i === order.length - 1 ? 24 : (i % 23) + 1; LETTERS_OF[day].push(li); });
 })();
 const DAY_OF_LETTER = []; LETTERS_OF.forEach((ls, d) => ls.forEach(li => (DAY_OF_LETTER[li] = d)));
-const piecePos = p => ({ bx: (p % 6) / 5 * 100 + "%", by: Math.floor(p / 6) / 3 * 100 + "%" });
+const DAY_OF_PIECE = []; for (let d = 1; d <= 24; d++) DAY_OF_PIECE[PIECE_OF[d]] = d;
+
+// Puzzleform: 6 x 4 Teile à 100 Einheiten, Nasen zufällig (aber fest) nach außen oder innen
+const PCOLS = 6, PROWS = 4;
+const HSIGN = [], VSIGN = [];
+(() => {
+  const r = rng(2026);
+  for (let y = 0; y < PROWS - 1; y++) HSIGN.push(Array.from({ length: PCOLS }, () => (r() < .5 ? 1 : -1)));
+  for (let y = 0; y < PROWS; y++) VSIGN.push(Array.from({ length: PCOLS - 1 }, () => (r() < .5 ? 1 : -1)));
+})();
+function edge(x0, y0, dx, dy, s) {
+  const P = (u, v) => { v *= s; return `${(x0 + dx * u / 100 - dy / 100 * v).toFixed(1)} ${(y0 + dy * u / 100 + dx / 100 * v).toFixed(1)}`; };
+  if (!s) return `L${P(100, 0)}`;
+  return `L${P(34, 0)}C${P(38, 0)} ${P(40, -4)} ${P(37, -10)}C${P(33, -18)} ${P(40, -24)} ${P(50, -24)}C${P(60, -24)} ${P(67, -18)} ${P(63, -10)}C${P(60, -4)} ${P(62, 0)} ${P(66, 0)}L${P(100, 0)}`;
+}
+function piecePath(p) {
+  const r = Math.floor(p / PCOLS), c = p % PCOLS, x = c * 100, y = r * 100;
+  return `M${x} ${y}` +
+    edge(x, y, 100, 0, r === 0 ? 0 : -HSIGN[r - 1][c]) +
+    edge(x + 100, y, 0, 100, c === PCOLS - 1 ? 0 : VSIGN[r][c]) +
+    edge(x + 100, y + 100, -100, 0, r === PROWS - 1 ? 0 : HSIGN[r][c]) +
+    edge(x, y + 100, 0, -100, c === 0 ? 0 : -VSIGN[r][c - 1]) + "Z";
+}
+const PIECE_D = Array.from({ length: 24 }, (_, p) => piecePath(p));
+const shutterOf = d => SHUTTERS[(d * 7) % 4];   // gleiche Farbe wie der Fensterladen des Tages
 
 // Foto laden, sonst Platzhalter
+let PHOTO = "";
 (() => {
   const ph = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"><defs><radialGradient id="g" cx=".5" cy=".3" r=".9"><stop offset="0" stop-color="#ffd98a"/><stop offset=".55" stop-color="#c77a3a"/><stop offset="1" stop-color="#5a2c10"/></radialGradient></defs><rect width="600" height="400" fill="url(#g)"/>${
     Array.from({ length: 40 }, (_, i) => { const x = (i * 97) % 600, y = (i * 61) % 400, s = 8 + (i % 5) * 4; return `<path transform="translate(${x} ${y}) scale(${s / 20})" d="M0 6C-6-4-20 0-10 12L0 20 10 12C20 0 6-4 0 6Z" fill="#fff" opacity=".${2 + i % 4}"/>`; }).join("")
   }<text x="300" y="190" text-anchor="middle" font-family="Georgia,serif" font-size="40" fill="#fff">Hier kommt</text><text x="300" y="240" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="40" fill="#fff">euer Familienfoto</text></svg>`;
-  const setPhoto = url => document.documentElement.style.setProperty("--photo", `url("${url}")`);
-  setPhoto("data:image/svg+xml," + encodeURIComponent(ph));
-  const img = new Image(); img.onload = () => setPhoto(PUZZLE_PHOTO); img.src = PUZZLE_PHOTO;
+  PHOTO = "data:image/svg+xml," + encodeURIComponent(ph);
+  const img = new Image();
+  img.onload = () => { PHOTO = PUZZLE_PHOTO; document.querySelectorAll("image.photo").forEach(i => i.setAttribute("href", PHOTO)); };
+  img.src = PUZZLE_PHOTO;
 })();
 
-function renderBoard(el, got, { fresh = 0, stagger = false } = {}) {
-  el.innerHTML = "";
-  const dayOfPiece = []; for (let d = 1; d <= 24; d++) dayOfPiece[PIECE_OF[d]] = d;
+// Lennys Handschrift: assets/schrift/01.png, 02.png ... (ein Bild je Buchstabe in Satz-Reihenfolge)
+const HW = [];
+function loadHandwriting(dir) {
+  LETTERS.forEach((_, li) => {
+    const url = dir + String(li + 1).padStart(2, "0") + ".png", img = new Image();
+    img.onload = () => { HW[li] = url; document.querySelectorAll(`[data-li="${li}"]`).forEach(applyHand); };
+    img.src = url;
+  });
+}
+function applyHand(el) {
+  const url = HW[+el.dataset.li];
+  if (url && el.textContent) { el.classList.add("hw"); el.style.backgroundImage = `url("${url}")`; }
+}
+
+function boardSVG(id, got, { fresh = 0, stagger = false } = {}) {
+  let pcs = "";
   for (let p = 0; p < 24; p++) {
-    const d = dayOfPiece[p], s = document.createElement("span"), { bx, by } = piecePos(p);
-    s.className = "pc" + (got.has(d) && d !== fresh ? " got" : "") + (d === fresh ? " new" : "");
-    s.dataset.n = d; s.style.setProperty("--bx", bx); s.style.setProperty("--by", by);
-    if (stagger) s.style.setProperty("--d", (0.15 + ((p * 7) % 24) * 0.09).toFixed(2) + "s");
-    el.appendChild(s);
-    if (d === fresh) requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => s.classList.add("got"), 450)));
+    const d = DAY_OF_PIECE[p], r = Math.floor(p / PCOLS), c = p % PCOLS;
+    const cls = "pc" + (got.has(d) && d !== fresh ? " got" : "") + (d === fresh ? " new" : "");
+    const delay = stagger ? `;--d:${(0.15 + ((p * 7) % 24) * 0.09).toFixed(2)}s` : "";
+    pcs += `<g class="${cls}" data-n="${d}" style="--c:${shutterOf(d)}${delay}"><path class="cover" d="${PIECE_D[p]}"/><text x="${c * 100 + 50}" y="${r * 100 + 62}">${d}</text></g>`;
   }
+  const fl = fresh ? `<path class="flash" d="${PIECE_D[PIECE_OF[fresh]]}"/>` : "";
+  return `<svg viewBox="0 0 600 400" aria-hidden="true"><image class="photo" href="${PHOTO}" width="600" height="400" preserveAspectRatio="xMidYMid slice"/>` +
+    `<path class="seams" d="${PIECE_D.join("")}"/>${pcs}${fl}</svg>`;
+}
+function renderBoard(el, got, opts = {}) {
+  el.innerHTML = boardSVG(el.id, got, opts);
+  el.classList.toggle("done", got.size === 24 && !opts.stagger);
+  if (opts.fresh) { const g = el.querySelector(".pc.new"); setTimeout(() => g && g.classList.add("got"), 480); }
+}
+function thumbSVG(n) {
+  const p = PIECE_OF[n], x = (p % PCOLS) * 100, y = Math.floor(p / PCOLS) * 100, id = "th" + n;
+  return `<svg class="thumb" viewBox="${x - 26} ${y - 26} 152 152" aria-hidden="true"><defs><clipPath id="${id}"><path d="${PIECE_D[p]}"/></clipPath></defs>` +
+    `<image class="photo" href="${PHOTO}" width="600" height="400" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/><path class="edge" d="${PIECE_D[p]}"/></svg>`;
 }
 function renderSecret(el, got, { fresh = 0, stagger = false } = {}) {
   el.innerHTML = ""; let li = 0;
@@ -486,7 +556,8 @@ function renderSecret(el, got, { fresh = 0, stagger = false } = {}) {
       const c = document.createElement("span"), d = DAY_OF_LETTER[li], has = got.has(d);
       c.className = "ch" + (has ? " got" : "") + (has && (d === fresh || stagger) ? " new" : "");
       if (stagger) c.style.animationDelay = (2.6 + li * 0.12).toFixed(2) + "s";
-      c.textContent = has ? LETTERS[li] : ""; word.appendChild(c); li++;
+      c.dataset.li = li; c.textContent = has ? LETTERS[li] : ""; applyHand(c);
+      word.appendChild(c); li++;
     });
     el.appendChild(word);
   });
@@ -543,7 +614,9 @@ function refresh() {
   renderPrize();
 }
 
+let lastDoor = null;
 function tap(b, n) {
+  lastDoor = b;
   if (!isUnlocked(n)) {
     b.classList.remove("wiggle"); void b.offsetWidth; b.classList.add("wiggle");
     toast(`Wuff! Noch nicht schummeln, Mama. Fenster ${n} geht erst am ${n}. Dezember auf.`);
@@ -554,12 +627,14 @@ function tap(b, n) {
   if (first) { sparkle(b); Music.chime(); }
   setTimeout(() => show(n, first), first ? 950 : 0);
 }
+const SPARK_STAR = `<svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0-9C1-3 3-1 9 0 3 1 1 3 0 9-1 3-3 1-9 0-3-1-1-3 0-9Z" fill="currentColor"/></svg>`;
+const SPARK_FLAKE = `<svg viewBox="-10 -10 20 20" aria-hidden="true"><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M0-8V8M-7-4 7 4M-7 4 7-4"/><path d="M-2-6 0-4 2-6M-2 6 0 4 2 6" fill="none"/></g></svg>`;
 function sparkle(el) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
   for (let i = 0; i < 14; i++) {
     const s = document.createElement("span"), a = Math.random() * Math.PI * 2, d = 40 + Math.random() * 50;
-    s.className = "spark"; s.textContent = i % 3 ? "✦" : "❄";
+    s.className = "spark"; s.innerHTML = i % 3 ? SPARK_STAR : SPARK_FLAKE;
     s.style.setProperty("--x0", cx - 7 + "px"); s.style.setProperty("--y0", cy - 9 + "px");
     s.style.setProperty("--x1", cx - 7 + Math.cos(a) * d + "px"); s.style.setProperty("--y1", cy - 9 + Math.sin(a) * d + "px");
     s.style.color = ["#ffd98a", "#ffffff", "#ff8a7a"][i % 3];
@@ -581,30 +656,37 @@ function show(n, first = false) {
   if (d.type === "video") m = add("video", { src: d.src, controls: true, playsInline: true, preload: "metadata", className: "media" });
   if (d.type === "audio") m = add("audio", { src: d.src, controls: true, className: "media" });
   if (m) m.addEventListener("error", () => m.remove());   // Datei fehlt noch: Text reicht
-  if (d.text) add("p", { id: "cardText", textContent: d.text, className: d.type === "hint" ? "hint" : "" });
+  const text = n === 24 && opened.size < 24 && d.textEarly ? d.textEarly : d.text;
+  if (text) add("p", { id: "cardText", textContent: text, className: d.type === "hint" ? "hint" : "" });
 
-  // Gewinn: Puzzleteil + Buchstabe(n)
-  const g = add("div", { className: "gain" }), { bx, by } = piecePos(PIECE_OF[n]);
-  g.innerHTML = `<span class="thumb" style="--bx:${bx};--by:${by}"></span>`;
-  LETTERS_OF[n].forEach(li => { const l = document.createElement("span"); l.className = "letter"; l.textContent = LETTERS[li]; g.appendChild(l); });
-  const t = document.createElement("span");
-  t.innerHTML = LETTERS_OF[n].length ? `<b>Neues Puzzleteil</b> und ein Buchstabe für Lennys geheimen Satz.` : `<b>Neues Puzzleteil</b> für dein Weihnachtspuzzle.`;
+  // P.S.: Puzzleteil + Buchstabe(n) des Tages
+  const g = $("cardGain");
+  g.innerHTML = thumbSVG(n);
+  LETTERS_OF[n].forEach(li => { const l = document.createElement("span"); l.className = "letter"; l.dataset.li = li; l.textContent = LETTERS[li]; applyHand(l); g.appendChild(l); });
+  const t = document.createElement("p");
+  t.textContent = LETTERS_OF[n].length > 1 ? "P.S. Hier ist dein Puzzleteil von heute und Buchstaben für meinen geheimen Satz."
+    : LETTERS_OF[n].length ? "P.S. Hier ist dein Puzzleteil von heute und ein Buchstabe für meinen geheimen Satz."
+    : "P.S. Hier ist dein Puzzleteil von heute.";
   g.appendChild(t);
 
   const last = first && opened.size === 24 && !flag("finale");
   $("close").textContent = last ? "Zu deiner Überraschung" : "Schließen";
-  const o = $("overlay"); o.hidden = false;
+  const o = $("overlay"); o.hidden = false; setInert(true);
   requestAnimationFrame(() => o.classList.add("show"));
   $("close").focus();
 }
+// Während ein Dialog offen ist, ist der Rest der Seite nicht erreichbar
+function setInert(on) { document.querySelectorAll(".wrap, #prize, footer").forEach(e => (e.inert = on)); }
+function backToDoor() { if (lastDoor) lastDoor.focus({ preventScroll: true }); }
 function hide() {
   const o = $("overlay");
   if (o.hidden) return;
   o.classList.remove("show");
   o.querySelectorAll("video, audio").forEach(m => m.pause());
   setTimeout(() => (o.hidden = true), 250);
+  if (opened.size === 24 && shownFirst && !flag("finale")) { setTimeout(finale, 450); return; }
+  setInert(false); backToDoor();
   if (!shownFirst) return;
-  if (opened.size === 24 && !flag("finale")) { setTimeout(finale, 450); return; }
   // Neues Teil im Puzzle zeigen
   setTimeout(() => {
     renderPrize(shown);
@@ -622,6 +704,7 @@ function finale() {
   const all = new Set(Array.from({ length: 24 }, (_, i) => i + 1));
   renderBoard($("finBoard"), new Set());
   renderSecret($("finSecret"), new Set());
+  $("finPups").innerHTML = pup(FURS[0], { hat: true, anim: "head-l" }) + pup(FURS[3], { hat: true, anim: "head-r" }) + pup(FURS[1], { hat: true, anim: "head-l" });
   $("finSecret").setAttribute("aria-label", SECRET);
   const fm = $("finMedia"); fm.innerHTML = "";
   if (FINALE_VIDEO) {
@@ -630,24 +713,27 @@ function finale() {
     v.addEventListener("error", () => v.remove());
     fm.appendChild(v);
   }
-  const f = $("finale"); f.hidden = false; f.scrollTop = 0;
+  const f = $("finale"); f.hidden = false; f.scrollTop = 0; setInert(true); document.body.classList.add("fin-open");
   requestAnimationFrame(() => {
     f.classList.add("show");
     setTimeout(() => {   // Teile fallen nacheinander weg, dann kommen die Buchstaben
       renderBoard($("finBoard"), new Set(), { stagger: true });
       requestAnimationFrame(() => requestAnimationFrame(() => $("finBoard").querySelectorAll(".pc").forEach(p => p.classList.add("got"))));
       renderSecret($("finSecret"), all, { stagger: true });
+      setTimeout(() => $("finBoard").classList.add("done"), 2700);   // Fugen verschwinden: aus dem Puzzle wird ein Foto
     }, 400);
   });
   setTimeout(confetti, 2600);
   Music.fanfare();
-  $("finClose").focus();
+  $("finClose").focus({ preventScroll: true });
   renderPrize();
 }
 function hideFinale() {
   const f = $("finale"); if (f.hidden) return;
   f.classList.remove("show"); f.querySelectorAll("video").forEach(v => v.pause());
   setTimeout(() => (f.hidden = true), 500);
+  setInert(false); document.body.classList.remove("fin-open");
+  if (!$("replay").hidden) $("replay").focus({ preventScroll: true }); else backToDoor();
 }
 $("finClose").addEventListener("click", hideFinale);
 $("replay").addEventListener("click", finale);
@@ -719,7 +805,7 @@ const Music = (() => {
   }
   function set(v) {
     on = v; try { localStorage.setItem(SOUND_KEY, v ? "1" : "0"); } catch {}
-    $("sound").setAttribute("aria-pressed", v); $("sound").setAttribute("aria-label", v ? "Musik ausschalten" : "Weihnachtsmusik einschalten");
+    $("sound").setAttribute("aria-pressed", v);
     v ? start() : stop();
   }
   function fx(notes) { if (!on || !init()) return; ctx.resume(); const t = ctx.currentTime + .02; notes.forEach(([f, dt, v]) => tone(f, t + dt, v ?? .13, 1.4)); }
@@ -731,7 +817,7 @@ const Music = (() => {
   $("sound").addEventListener("click", () => set(!on));
   let pref = false; try { pref = localStorage.getItem(SOUND_KEY) === "1"; } catch {}
   if (pref) {   // Browser erlauben Ton erst nach einer Berührung
-    on = true; $("sound").setAttribute("aria-pressed", "true"); $("sound").setAttribute("aria-label", "Musik ausschalten");
+    on = true; $("sound").setAttribute("aria-pressed", "true");
     const go = e => { if (e.target.closest("#sound")) return; if (on) start(); removeEventListener("pointerdown", go, true); };
     addEventListener("pointerdown", go, true);
   }
@@ -756,7 +842,10 @@ if (DEMO) {
   $("testFinale").addEventListener("click", finale);
   if (!opened.size) [1,2,3,4,6,8].forEach(n => opened.add(n));
 }
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+scrollTo(0, 0);
 build();
+loadHandwriting(HANDWRITING);
 
 // ===================== Schneefall =====================
 (() => {
