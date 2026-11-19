@@ -1,5 +1,5 @@
 const { test, expect } = require("@playwright/test");
-const { openAt, door } = require("./helpers");
+const { openAt, door, openDoor } = require("./helpers");
 
 // Spec: specs/002-lennys-stimme-design.md
 
@@ -8,7 +8,7 @@ test("AK1: Texte in Lennys Stimme, P.S. nach der Unterschrift", async ({ page })
   await expect(page.locator("header .dedication")).toHaveText("von Lenny, für dich, Mama");
   await expect(page.locator(".eyebrow")).toHaveCount(0);
   await expect(page.locator("#prizeTitle")).toHaveText("Mein Puzzle für dich");
-  await door(page, 4).click();
+  await openDoor(page, 4);
   await expect(page.locator("#cardGain p")).toContainText("P.S.");
   const order = await page.evaluate(() => {
     const sig = document.querySelector(".card .sig"), gain = document.getElementById("cardGain");
@@ -23,7 +23,7 @@ test("AK1: Texte in Lennys Stimme, P.S. nach der Unterschrift", async ({ page })
 test("AK2: Tag-24-Text hängt davon ab, ob alle Türchen offen sind", async ({ page }) => {
   await openAt(page, "2026-12-24T09:00:00");
   const { text, early } = await page.evaluate(() => ({ text: DAYS[24].text, early: DAYS[24].textEarly }));
-  await door(page, 24).click();
+  await openDoor(page, 24);
   await expect(page.locator("#cardText")).toHaveText(early);
   await page.locator("#close").click();
   await page.evaluate(() => { for (let n = 1; n <= 23; n++) opened.add(n); refresh(); });
@@ -61,7 +61,7 @@ test("AK3: echte Puzzleteile, die zusammenpassen", async ({ page }) => {
 
 test("AK4: Pop-up zeigt das Teil in Puzzleform", async ({ page }) => {
   await openAt(page, "2026-12-10T12:00:00");
-  await door(page, 9).click();
+  await openDoor(page, 9);
   const thumb = page.locator("#cardGain svg.thumb");
   await expect(thumb).toBeVisible();
   const d = await page.evaluate(() => PIECE_D[PIECE_OF[9]]);
@@ -95,7 +95,7 @@ test("AK6: Neuladen startet oben", async ({ page }) => {
 
 test("AK7: Dialoge sperren den Hintergrund, Fokus kehrt zurück", async ({ page }) => {
   await openAt(page, "2026-12-10T12:00:00");
-  await door(page, 3).click();
+  await openDoor(page, 3);
   await expect(page.locator("#overlay")).toBeVisible();
   expect(await page.evaluate(() => document.querySelector(".wrap").inert && document.getElementById("prize").inert)).toBe(true);
   await page.locator("#close").click();

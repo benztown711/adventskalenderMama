@@ -44,6 +44,7 @@ jobs:
         run: |
           mkdir _site
           cp *.html _site/
+          cp -r spiele _site/
           [ -d assets ] && cp -r assets _site/ || true
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
