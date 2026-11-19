@@ -148,3 +148,38 @@ test("AK10: Helfer spielt mit echten Klicks fehlerfrei", async ({ page }) => {
     await expect(page.locator("#overlay")).toBeHidden();
   }
 });
+
+test("AK11: Jubel deckend und lang genug, Knöpfe klar, kleine Handys ohne Scrollen", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await openAt(page, "2026-12-24T09:00:00");
+  await expect(page.locator("#gameHint svg")).toHaveCount(1);
+  const ring = await page.locator("#gameRestart").evaluate(e => getComputedStyle(e).boxShadow);
+  expect(ring).toContain("inset");
+  for (const size of [[360, 640], [375, 667]]) {
+    await page.setViewportSize({ width: size[0], height: size[1] });
+    for (const n of [1, 2, 3, 22, 23, 24]) {
+      await door(page, n).click();
+      await expect(page.locator("#game")).toBeVisible();
+      const r = await page.evaluate(() => ({
+        bar: document.querySelector(".gbar").getBoundingClientRect().bottom,
+        small: [...document.querySelectorAll("#gameStage button")].map(b => b.getBoundingClientRect())
+          .filter(b => b.width > 0 && (b.width < 40 || b.height < 40)).length,
+        over: document.documentElement.scrollWidth - innerWidth,
+      }));
+      expect(r.bar, `Knöpfe unter dem Rand an Tag ${n} bei ${size}`).toBeLessThanOrEqual(size[1]);
+      expect(r.small, `zu kleine Tippflächen an Tag ${n} bei ${size}`).toBe(0);
+      expect(r.over).toBeLessThanOrEqual(0);
+      await page.locator("#gameClose").click();
+    }
+  }
+  // Jubel: deckend, Zähler oben noch unverändert, nach rund 2 Sekunden geht das Türchen auf
+  await door(page, 1).click();
+  await solveGame(page);
+  await expect(page.locator("#gameWin")).toBeVisible();
+  expect(await page.locator("#gameWin").evaluate(e => getComputedStyle(e).backgroundColor)).toMatch(/^rgb\(/);
+  await expect(page.locator("#starsCount")).toHaveText("0");
+  await page.waitForTimeout(1600);
+  await expect(page.locator("#gameWin")).toBeVisible();
+  await expect(page.locator("#overlay")).toBeVisible({ timeout: 4000 });
+  await expect(page.locator("#starsCount")).toHaveText("3");
+});

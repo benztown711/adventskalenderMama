@@ -294,19 +294,33 @@ body.fin-open #snow { z-index: 23; }
 .gbar { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .gbar button, .ghelp {
   border: 0; border-radius: 999px; min-height: 44px; padding: 0 18px; font: 800 15px var(--font-body); cursor: pointer;
-  background: #ece4d6; color: var(--ink-strong); display: inline-flex; align-items: center; gap: 6px;
+  background: var(--paper); color: var(--ginger-dark); box-shadow: inset 0 0 0 2px var(--ginger); display: inline-flex; align-items: center; gap: 6px;
 }
-.ghelp { align-self: center; background: var(--green); color: var(--snow); }
+.gbar button svg { width: 18px; height: 18px; color: var(--gold); }
+.gbar button:active { background: #f3e6cf; }
+.ghelp { align-self: center; background: var(--green); color: var(--snow); box-shadow: none; }
 .gbar button:focus-visible, .ghelp:focus-visible, .gx:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .g-hint { animation: ghint .9s ease-in-out 3; position: relative; z-index: 3; }
 @keyframes ghint { 50% { filter: drop-shadow(0 0 6px var(--glow)) drop-shadow(0 0 12px var(--gold)); transform: scale(1.08); } }
-.gwin { position: absolute; inset: 0; z-index: 5; border-radius: inherit; background: rgba(251,246,236,.94); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+.gwin { position: absolute; inset: 0; z-index: 5; border-radius: inherit; background: var(--paper); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
 .gwin h3 { font-family: var(--font-display); font-weight: 600; font-size: 32px; margin: 0; }
 .gwin .row { display: flex; gap: 8px; }
 .gwin .row svg { width: 54px; height: 54px; color: #d8cfc0; }
 .gwin .row svg.on { color: var(--gold); animation: starpop .55s cubic-bezier(.3,1.7,.5,1) both; animation-delay: var(--d); }
 @keyframes starpop { 0% { transform: scale(0) rotate(-40deg); } 100% { transform: none; } }
 .gwin p { margin: 0; font: 22px/1.1 var(--font-hand); color: var(--green); }
+
+/* Kleine Handys: Karte kompakter, Blech und Wau-Doku etwas kleiner, damit Tipp und Neu starten ohne Scrollen sichtbar sind */
+@media (max-height: 760px) {
+  .game { padding-top: max(58px, env(safe-area-inset-top, 0px)); }
+  .gcard { padding: 10px 12px 10px; gap: 5px; }
+  .gcard .gday { position: absolute; top: 14px; left: 16px; margin: 0; font-size: 17px; }
+  .gcard h2 { font-size: 22px; margin-top: 4px; }
+  .gstage .bb { gap: 6px; }
+  .gstage .bb-tray { min-height: 0; padding: 6px; }
+  .gstage .bb-bg { --s: 16px; }
+  .gstage .bb-board, .gstage .wd-board, .gstage .wd-bar { max-width: max(286px, calc(100svh - 400px)); margin-inline: auto; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .sh, .overlay, .card, .toast, .inside .pup, .pc, .seams, .finale, .game { transition: none; }
@@ -414,7 +428,7 @@ body.fin-open #snow { z-index: 23; }
     <div class="gstage" id="gameStage"></div>
     <p class="gmsg" id="gameMsg" aria-live="polite"></p>
     <div class="gbar">
-      <button type="button" id="gameHint">Tipp</button>
+      <button type="button" id="gameHint"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path d="M0-11 3.2-3.6 11-3.4 4.9 1.6 7 9.4 0 5 -7 9.4-4.9 1.6-11-3.4-3.2-3.6Z" fill="currentColor"/></svg>Tipp</button>
       <button type="button" id="gameRestart">Neu starten</button>
     </div>
     <button type="button" class="ghelp" id="gameHelp" hidden>Welpe hilft: Türchen öffnen</button>
@@ -806,7 +820,7 @@ function finishGame(helped = false) {
   w.setAttribute("aria-label", `${s} von 3 Sternen`);
   w.hidden = false; $("gameHelp").hidden = true; $("gameClose").hidden = true;   // Jubel läuft, das Türchen geht gleich auf
   Music.fx("win");
-  gameLater(() => { closeGame(true); renderStars(true); reveal(n); }, reduced() ? 700 : 1500);
+  gameLater(() => { closeGame(true); renderStars(true); reveal(n); }, reduced() ? 700 : 2100);   // erst die Sterne genießen, dann zählt oben der Zähler hoch
 }
 $("gameClose").addEventListener("click", () => closeGame());
 $("gameRestart").addEventListener("click", () => { if (!GAME.done) { GAME.fails++; checkHelp(); mountGame(); } });
