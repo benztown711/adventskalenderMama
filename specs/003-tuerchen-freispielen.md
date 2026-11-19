@@ -22,9 +22,10 @@ Mama spielt jedes Türchen erst frei, mit kurzen Rätseln im Stil ihrer Handyspi
 - [x] AK8: Nie festhängen: Knopf "Tipp" (zeigt einen richtigen Zug), "Neu starten", und nach 3 Fehlversuchen oder 2 Minuten "Welpe hilft" (öffnet direkt, 1 Stern). Schließen ohne Lösen lässt das Türchen zu.
 - [x] AK9: Auf Handybreite (390 px) kein Querscrollen, keine JS-Fehler, alles per Antippen spielbar, Felder mindestens 40 px.
 - [x] AK10: Alle bisherigen Tests laufen weiter; sie öffnen Türchen über einen Helfer, der das Level mit echten Klicks löst.
+- [x] AK11 (Design-Check): Sterne-Jubel deckend und rund 2 Sekunden sichtbar, Zähler oben zählt erst danach hoch. "Tipp" und "Neu starten" mit Lebkuchen-Rand, Tipp mit Stern. Auf kleinen Handys (360 x 640, 375 x 667) sind beide Knöpfe ohne Scrollen sichtbar, Felder weiter mindestens 40 px.
 
 ## Tests
-- AK1, AK2 (Reihenfolge, festes Level), AK6 bis AK10: `tests/003-tuerchen-freispielen.spec.js`.
+- AK1, AK2 (Reihenfolge, festes Level), AK6 bis AK11: `tests/003-tuerchen-freispielen.spec.js`.
 - AK2 (alle Level lösbar) und AK3, AK4, AK5: je Spiel `tests/003-spiel-pfeile.spec.js`, `tests/003-spiel-bloecke.spec.js`, `tests/003-spiel-waudoku.spec.js`.
 - Bisherige Tests: erstes Öffnen eines Türchens über Helfer `openDoor(page, n)` (Spiel mit echten Klicks lösen, dann gleiche Prüfungen wie vorher).
 
