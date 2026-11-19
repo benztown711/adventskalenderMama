@@ -1,0 +1,40 @@
+# 003 Türchen freispielen (Gamification)
+
+Status: entwurf
+
+## Ziel
+Mama spielt jedes Türchen erst frei, mit kurzen Rätseln im Stil ihrer Handyspiele (Arrows, Block Blast, Miao Doku), im Lebkuchen- und Welpen-Look. Dazu Sterne sammeln. Lennys Inhalte hinter den Türchen bleiben unverändert.
+
+## Spiele (reihum, jeder Tag hat ein festes, garantiert lösbares Level)
+- **Pfeile** (Arrows-Prinzip): Lebkuchen-Pfeile auf einem Raster. Antippen lässt einen Pfeil in seine Richtung hinausgleiten, wenn der Weg frei ist. Stößt er an, prallt er zurück und kostet ein Herz (3 Herzen, dann Neustart). Alle Pfeile raus = Türchen frei.
+- **Blöcke** (Block-Blast-Prinzip): Plätzchenblech 6 x 6, drei Plätzchen-Blöcke, einer davon golden mit der Tageszahl. Blöcke aufs Blech ziehen (oder antippen und Feld antippen). Volle Reihen und Spalten verschwinden. Ziel: die markierten Reihen abräumen.
+- **Wau-Doku** (Miao-Doku-Prinzip): Sudoku mit Welpen statt Katzen. 4 x 4 mit 4 Welpen, ab dem 13.12. 6 x 6 mit 6 Welpen. Feld antippen, Welpe wählen.
+- Schwierigkeit steigt über den Dezember (Woche 1 unter 1 Minute, später 1 bis 2 Minuten).
+
+## Akzeptanzkriterien
+- [ ] AK1: Ein freigegebenes, noch zu Türchen startet zuerst das Spiel des Tages (Dialog `#game`), nicht das Pop-up. Gesperrte Türchen zeigen weiter den Hinweis, schon geöffnete gehen direkt auf.
+- [ ] AK2: Die Spielart wechselt reihum (Pfeile, Blöcke, Wau-Doku). Jedes der 24 Level ist fest (gleich nach Neuladen) und lösbar (eingebauter Löser prüft alle).
+- [ ] AK3: Pfeile: freier Pfeil gleitet hinaus, blockierter prallt ab und kostet ein Herz; alle raus = gelöst.
+- [ ] AK4: Blöcke: Block setzen nur auf freie Felder; volle Reihe oder Spalte verschwindet; Ziel erreicht = gelöst.
+- [ ] AK5: Wau-Doku: falscher Welpe wird markiert und zählt als Fehler; alles richtig = gelöst.
+- [ ] AK6: Nach dem Lösen: Sterne-Jubel, das Türchen geht auf, danach das bekannte Pop-up mit Puzzleteil. Finale und alle bisherigen Abläufe bleiben gleich.
+- [ ] AK7: Sterne: 3 ohne Fehler und Tipp, 2 bei wenigen, sonst 1. Summe oben sichtbar, bleibt nach Neuladen, im Finale "X von 72 Sternen".
+- [ ] AK8: Nie festhängen: Knopf "Tipp" (zeigt einen richtigen Zug), "Neu starten", und nach 3 Fehlversuchen oder 2 Minuten "Welpe hilft" (öffnet direkt, 1 Stern). Schließen ohne Lösen lässt das Türchen zu.
+- [ ] AK9: Auf Handybreite (390 px) kein Querscrollen, keine JS-Fehler, alles per Antippen spielbar, Felder mindestens 40 px.
+- [ ] AK10: Alle bisherigen Tests laufen weiter; sie öffnen Türchen über einen Helfer, der das Level mit echten Klicks löst.
+
+## Tests
+- Alle in `tests/003-tuerchen-freispielen.spec.js`, je AK ein Test mit dem AK-Kürzel im Namen.
+- Bisherige Tests: `door(page, n).click()` beim ersten Öffnen ersetzt durch Helfer `openDoor(page, n)` (Spiel lösen, dann gleiche Prüfungen wie vorher).
+
+## Technik
+- Spiele als eigene Dateien `spiele/pfeile.js`, `spiele/bloecke.js`, `spiele/waudoku.js` mit gleicher Schnittstelle (`create(el, day, api)`, `solveStep()`), Rahmen in `index.html`.
+- Deploy kopiert zusätzlich `spiele/`.
+- Level per Zufallsgenerator mit festem Seed pro Tag, Lösbarkeit durch Konstruktion.
+
+## Abhängigkeiten / Risiken
+- Spielstand pro Gerät (wie bisher).
+- Kein Vibrieren auf dem iPhone (Browser erlaubt es nicht); auf Android kurzes Feedback.
+
+## Offene Inhalte (liefert Atti/Lenny)
+- Nichts zwingend. Optional: ein Satz von Lenny für den Sterne-Jubel.
