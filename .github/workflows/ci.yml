@@ -27,17 +27,15 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm test
 
-  deploy:
-    # Nur Stand auf main, nur wenn Tests grün
+  build-site:
+    # Nur Stand auf main, nur wenn Tests grün. Bauen und Veröffentlichen sind getrennte Jobs
+    # (wie in der offiziellen Pages-Vorlage), sonst findet deploy-pages das Paket teils nicht.
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      contents: read
+      pages: read
     steps:
       - uses: actions/checkout@v4
       - name: Website-Dateien sammeln
@@ -51,5 +49,16 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+
+  deploy:
+    needs: build-site
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
