@@ -1,11 +1,11 @@
 const { test, expect } = require("@playwright/test");
-const { openAt, door } = require("./helpers");
+const { openAt, door, openDoor } = require("./helpers");
 
 // Spec: specs/001-puzzle-finale-musik.md
 
 /** Öffnet ein Türchen, wartet aufs Pop-up und schließt es wieder */
 async function openAndClose(page, n) {
-  await door(page, n).click();
+  await openDoor(page, n);
   await expect(page.locator("#overlay")).toBeVisible();
   await page.locator("#close").click();
   await expect(page.locator("#overlay")).toBeHidden();
@@ -50,7 +50,7 @@ test("AK3: Teile und Buchstaben sind vollständig verteilt", async ({ page }) =>
 
 test("AK4: Pop-up zeigt Puzzleteil und Buchstaben", async ({ page }) => {
   await openAt(page, "2026-12-10T12:00:00");
-  await door(page, 7).click();
+  await openDoor(page, 7);
   await expect(page.locator("#overlay .gain .thumb")).toBeVisible();
   const expected = await page.evaluate(() => LETTERS_OF[7].map(i => LETTERS[i]));
   await expect(page.locator("#overlay .gain .letter")).toHaveText(expected);
@@ -59,7 +59,7 @@ test("AK4: Pop-up zeigt Puzzleteil und Buchstaben", async ({ page }) => {
 test("AK5: letztes Türchen startet das Finale", async ({ page }) => {
   await openAt(page, "2026-12-24T09:00:00");
   await page.evaluate(() => { for (let n = 1; n <= 23; n++) opened.add(n); refresh(); });
-  await door(page, 24).click();
+  await openDoor(page, 24);
   await expect(page.locator("#close")).toHaveText("Zu deiner Überraschung");
   await page.locator("#close").click();
   await expect(page.locator("#finale")).toBeVisible();
@@ -102,7 +102,7 @@ test("AK8: fehlende Medien ohne sichtbare Fehler", async ({ page }) => {
   await expect(page.locator("#board image.photo")).toHaveAttribute("href", /^data:image\/svg\+xml/);
   // Ein Video-Türchen mit fehlender Datei zeigt trotzdem den Text, ohne kaputtes Video
   await page.evaluate(() => { DAYS[5] = { type: "video", src: "assets/gibtsnicht.mp4", title: "Test", text: "Nur Text" }; });
-  await door(page, 5).click();
+  await openDoor(page, 5);
   await expect(page.locator("#cardText")).toHaveText("Nur Text");
   await expect(page.locator("#overlay video")).toHaveCount(0);
 });

@@ -260,9 +260,56 @@ body.fin-open #snow { z-index: 23; }
 .confetti { position: fixed; top: -20px; z-index: 24; width: 9px; height: 14px; pointer-events: none; border-radius: 2px; animation: fall var(--t) cubic-bezier(.25,.6,.5,1) var(--dl) forwards; }
 @keyframes fall { 0% { transform: translate(0,0) rotate(0); opacity: 1; } 100% { transform: translate(var(--dx), 110vh) rotate(var(--r)); opacity: .9; } }
 
+/* ---------- Sterne-Zähler ---------- */
+.stars-hud {
+  position: fixed; z-index: 25; top: max(12px, env(safe-area-inset-top, 0px)); left: max(12px, env(safe-area-inset-left, 0px));
+  height: 44px; padding: 0 14px 0 10px; border-radius: 999px; border: 2px solid rgba(255,217,138,.6); background: rgba(16,29,54,.75);
+  color: var(--glow); display: flex; align-items: center; gap: 6px; font: 800 17px var(--font-body); backdrop-filter: blur(4px);
+}
+.stars-hud svg { width: 22px; height: 22px; }
+.stars-hud.bump { animation: hudbump .6s cubic-bezier(.3,1.6,.5,1); }
+@keyframes hudbump { 40% { transform: scale(1.25); } }
+.fin-stars { margin: -6px 0 0; color: var(--glow); font-weight: 800; }
+
+/* ---------- Spiel zum Freispielen ---------- */
+.game {
+  position: fixed; inset: 0; z-index: 21; background: rgba(6,10,22,.82); display: grid; place-items: center; overflow-y: auto;
+  padding: max(64px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+  opacity: 0; transition: opacity .25s;
+}
+.game.show { opacity: 1; }
+.gcard {
+  position: relative; width: min(100%, 420px); background: var(--snow); color: var(--ink-strong); border-radius: 22px;
+  padding: 16px 14px 16px; display: flex; flex-direction: column; gap: 10px; text-align: center;
+  box-shadow: 0 0 0 4px var(--ginger), 0 22px 60px rgba(0,0,0,.5);
+}
+.gcard .gday { font: 19px/1 var(--font-hand); color: var(--red); transform: rotate(-2deg); margin-top: 4px; }
+.gcard h2 { font-family: var(--font-display); font-weight: 600; font-size: 25px; margin: 0; }
+.gcard .ggoal { margin: -4px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.4; text-wrap: balance; }
+.gx { position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; color: var(--ink-soft); cursor: pointer; display: grid; place-items: center; }
+.gx svg { width: 22px; height: 22px; }
+.gstage { position: relative; min-height: 120px; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.gmsg { min-height: 1.3em; margin: 0; font-weight: 800; color: var(--red); font-size: 15px; }
+.gbar { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.gbar button, .ghelp {
+  border: 0; border-radius: 999px; min-height: 44px; padding: 0 18px; font: 800 15px var(--font-body); cursor: pointer;
+  background: #ece4d6; color: var(--ink-strong); display: inline-flex; align-items: center; gap: 6px;
+}
+.ghelp { align-self: center; background: var(--green); color: var(--snow); }
+.gbar button:focus-visible, .ghelp:focus-visible, .gx:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.g-hint { animation: ghint .9s ease-in-out 3; position: relative; z-index: 3; }
+@keyframes ghint { 50% { filter: drop-shadow(0 0 6px var(--glow)) drop-shadow(0 0 12px var(--gold)); transform: scale(1.08); } }
+.gwin { position: absolute; inset: 0; z-index: 5; border-radius: inherit; background: rgba(251,246,236,.94); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+.gwin h3 { font-family: var(--font-display); font-weight: 600; font-size: 32px; margin: 0; }
+.gwin .row { display: flex; gap: 8px; }
+.gwin .row svg { width: 54px; height: 54px; color: #d8cfc0; }
+.gwin .row svg.on { color: var(--gold); animation: starpop .55s cubic-bezier(.3,1.7,.5,1) both; animation-delay: var(--d); }
+@keyframes starpop { 0% { transform: scale(0) rotate(-40deg); } 100% { transform: none; } }
+.gwin p { margin: 0; font: 22px/1.1 var(--font-hand); color: var(--green); }
+
 @media (prefers-reduced-motion: reduce) {
-  .sh, .overlay, .card, .toast, .inside .pup, .pc, .seams, .finale { transition: none; }
-  .win.today, .win.wiggle .sh, .bead, .smoke span, .head-l, .head-r, .blink, .wag, .spark, .pc.new, .ch.new, .confetti, .board .flash { animation: none; }
+  .sh, .overlay, .card, .toast, .inside .pup, .pc, .seams, .finale, .game { transition: none; }
+  .win.today, .win.wiggle .sh, .bead, .smoke span, .head-l, .head-r, .blink, .wag, .spark, .pc.new, .ch.new, .confetti, .board .flash, .stars-hud.bump, .g-hint, .gwin .row svg.on { animation: none; }
 }
 </style>
 </head>
@@ -323,6 +370,7 @@ body.fin-open #snow { z-index: 23; }
 <div class="finale" id="finale" hidden role="dialog" aria-modal="true" aria-labelledby="finTitle">
   <div class="fin-in">
     <h2 id="finTitle">Frohe Weihnachten, <em>Mama!</em></h2>
+    <p class="fin-stars" id="finStars" hidden></p>
     <div class="board" id="finBoard" aria-hidden="true"></div>
     <div class="fin-pups" id="finPups" aria-hidden="true"></div>
     <div class="note">
@@ -348,6 +396,35 @@ body.fin-open #snow { z-index: 23; }
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<div class="stars-hud" id="starsHud" role="status" aria-live="polite">
+  <svg viewBox="-12 -12 24 24" aria-hidden="true"><path d="M0-11 3.2-3.6 11-3.4 4.9 1.6 7 9.4 0 5 -7 9.4-4.9 1.6-11-3.4-3.2-3.6Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+  <span id="starsCount">0</span>
+</div>
+
+<!-- Spiel zum Freispielen eines Türchens -->
+<div class="game" id="game" hidden role="dialog" aria-modal="true" aria-labelledby="gameTitle">
+  <div class="gcard">
+    <button type="button" class="gx" id="gameClose" aria-label="Spiel schließen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="gday" id="gameDay"></div>
+    <h2 id="gameTitle"></h2>
+    <p class="ggoal" id="gameGoal"></p>
+    <div class="gstage" id="gameStage"></div>
+    <p class="gmsg" id="gameMsg" aria-live="polite"></p>
+    <div class="gbar">
+      <button type="button" id="gameHint">Tipp</button>
+      <button type="button" id="gameRestart">Neu starten</button>
+    </div>
+    <button type="button" class="ghelp" id="gameHelp" hidden>Welpe hilft: Türchen öffnen</button>
+    <div class="gwin" id="gameWin" hidden></div>
+  </div>
+</div>
+
+<!-- Die Spiele (je eine Datei). Fehlt eine, geht das Türchen einfach direkt auf. -->
+<script src="spiele/pfeile.js"></script>
+<script src="spiele/bloecke.js"></script>
+<script src="spiele/waudoku.js"></script>
 <script>
 // ===================== Einstellungen =====================
 const YEAR = 2026;
@@ -622,11 +699,119 @@ function tap(b, n) {
     toast(`Wuff! Noch nicht schummeln, Mama. Fenster ${n} geht erst am ${n}. Dezember auf.`);
     return;
   }
-  const first = !opened.has(n);
-  opened.add(n); refresh();
-  if (first) { sparkle(b); Music.chime(); }
-  setTimeout(() => show(n, first), first ? 950 : 0);
+  if (opened.has(n)) return show(n, false);
+  if (gameDef(n)) return startGame(n);
+  reveal(n);
 }
+// Türchen geht auf (nach dem Freispielen)
+function reveal(n) {
+  const b = document.querySelector(`.win[data-n="${n}"]`);
+  opened.add(n); refresh();
+  sparkle(b); Music.chime();
+  setTimeout(() => show(n, true), 950);
+}
+
+// ===================== Freispielen: Spiele, Sterne =====================
+// Spiele melden sich in spiele/*.js an: SPIELE.<typ> = { name, goal, create(el, day, api) }
+// create liefert { nextMove(): [CSS-Selektoren, die nacheinander angeklickt einen richtigen Zug ergeben], destroy?() }
+const GAME_TYPES = ["waudoku", "pfeile", "bloecke"];        // Tag 1 Pfeile, 2 Blöcke, 3 Wau-Doku, ...
+const gameOf = n => GAME_TYPES[n % 3];
+const gameDef = n => (window.SPIELE || {})[gameOf(n)];
+const STAR_KEY = STORE_KEY + "-stars", MAX_STARS = 72;
+let stars = (() => { try { return JSON.parse(localStorage.getItem(STAR_KEY) || "{}") || {}; } catch { return {}; } })();
+const starTotal = () => Object.values(stars).reduce((a, b) => a + b, 0);
+const STAR_SVG = `<svg viewBox="-12 -12 24 24" aria-hidden="true"><path d="M0-11 3.2-3.6 11-3.4 4.9 1.6 7 9.4 0 5 -7 9.4-4.9 1.6-11-3.4-3.2-3.6Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+function renderStars(bump = false) {
+  const t = starTotal();
+  $("starsCount").textContent = t;
+  $("starsHud").setAttribute("aria-label", `${t} von ${MAX_STARS} Sternen`);
+  if (bump) { const h = $("starsHud"); h.classList.remove("bump"); void h.offsetWidth; h.classList.add("bump"); }
+}
+function saveStars() { try { localStorage.setItem(STAR_KEY, JSON.stringify(stars)); } catch {} }
+
+const GAME = { day: 0, cur: null, mistakes: 0, hints: 0, fails: 0, done: false, timers: [] };
+const gameLater = (fn, ms) => GAME.timers.push(setTimeout(fn, ms));
+const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+function gameApi(n) {
+  return {
+    day: n,
+    level: (n - 1) / 23,                 // 0 = leicht (1.12.) bis 1 = schwer (23./24.12.)
+    rng: rng(n * 7919 + 17),             // fester Zufall pro Tag: gleiches Level nach Neustart und Neuladen
+    pup, FURS, reduced,
+    mistake(text) {                      // falscher Zug: zählt gegen die Sterne
+      if (GAME.done) return;
+      GAME.mistakes++; buzz(); gameMsg(text || "Hoppla!"); checkHelp();
+    },
+    fail(text) {                         // Runde verloren: Level startet neu
+      if (GAME.done) return;
+      GAME.fails++; checkHelp(); gameMsg(text || "Nochmal von vorn!");
+      gameLater(mountGame, 1100);
+    },
+    win() { finishGame(); },
+    sound(kind) { Music.fx(kind); },
+    message: gameMsg,
+  };
+}
+// Nach 3 Fehlversuchen (Fehler, verlorene Runden, Neustarts) oder 2 Minuten hilft der Welpe
+function checkHelp() { if (GAME.mistakes + GAME.fails >= 3) $("gameHelp").hidden = false; }
+function gameMsg(t) { $("gameMsg").textContent = t || ""; }
+function buzz() { try { navigator.vibrate && navigator.vibrate(40); } catch {} }
+function mountGame() {
+  const st = $("gameStage");
+  try { GAME.cur && GAME.cur.destroy && GAME.cur.destroy(); } catch {}
+  st.innerHTML = ""; gameMsg("");
+  GAME.cur = gameDef(GAME.day).create(st, GAME.day, gameApi(GAME.day));
+}
+function startGame(n) {
+  const def = gameDef(n);
+  Object.assign(GAME, { day: n, mistakes: 0, hints: 0, fails: 0, done: false });
+  $("gameDay").textContent = `Türchen ${n}`;
+  $("gameTitle").textContent = def.name;
+  $("gameGoal").textContent = def.goal;
+  $("gameHelp").hidden = true; $("gameWin").hidden = true;
+  const g = $("game"); g.hidden = false; setInert(true);
+  mountGame();
+  gameLater(() => ($("gameHelp").hidden = false), 120000);   // nach 2 Minuten hilft der Welpe
+  requestAnimationFrame(() => g.classList.add("show"));
+  $("gameClose").focus({ preventScroll: true });
+}
+function closeGame(won = false) {
+  const g = $("game"); if (g.hidden) return;
+  GAME.timers.forEach(clearTimeout); GAME.timers = [];
+  try { GAME.cur && GAME.cur.destroy && GAME.cur.destroy(); } catch {}
+  GAME.cur = null; $("gameStage").innerHTML = "";
+  g.classList.remove("show"); g.hidden = true;
+  if (!won) { setInert(false); backToDoor(); }
+}
+function gameHint() {
+  if (!GAME.cur || GAME.done) return;
+  const sel = (GAME.cur.nextMove() || [])[0], el = sel && document.querySelector(sel);
+  if (!el) return;
+  GAME.hints++;
+  document.querySelectorAll(".g-hint").forEach(e => e.classList.remove("g-hint"));
+  void el.getBoundingClientRect(); el.classList.add("g-hint");
+  gameLater(() => el.classList.remove("g-hint"), 2800);
+}
+// Sterne: 3 ohne Fehler und Tipp, 2 bei wenigen, sonst 1. "Welpe hilft" gibt 1 Stern.
+function gameStars() { const p = GAME.mistakes + GAME.hints + 2 * GAME.fails; return p === 0 ? 3 : p <= 3 ? 2 : 1; }
+function finishGame(helped = false) {
+  if (GAME.done) return;
+  GAME.done = true;
+  const n = GAME.day, s = helped ? 1 : gameStars();
+  stars[n] = Math.max(stars[n] || 0, s); saveStars();
+  const w = $("gameWin");
+  w.innerHTML = `<h3>${helped ? "Wuff!" : "Geschafft!"}</h3><div class="row">${[1, 2, 3].map(i =>
+    STAR_SVG.replace("<svg ", `<svg class="${i <= s ? "on" : ""}" style="--d:${(i * .18).toFixed(2)}s" `)).join("")}</div><p>${helped ? "Der Welpe hat geholfen." : s === 3 ? "Perfekt, Mama!" : "Super, Mama!"}</p>`;
+  w.setAttribute("aria-label", `${s} von 3 Sternen`);
+  w.hidden = false; $("gameHelp").hidden = true;
+  Music.fx("win");
+  gameLater(() => { closeGame(true); renderStars(true); reveal(n); }, reduced() ? 700 : 1500);
+}
+$("gameClose").addEventListener("click", () => closeGame());
+$("gameRestart").addEventListener("click", () => { if (!GAME.done) { GAME.fails++; checkHelp(); mountGame(); } });
+$("gameHint").addEventListener("click", gameHint);
+$("gameHelp").addEventListener("click", () => finishGame(true));
+renderStars();
 const SPARK_STAR = `<svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0-9C1-3 3-1 9 0 3 1 1 3 0 9-1 3-3 1-9 0-3-1-1-3 0-9Z" fill="currentColor"/></svg>`;
 const SPARK_FLAKE = `<svg viewBox="-10 -10 20 20" aria-hidden="true"><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M0-8V8M-7-4 7 4M-7 4 7-4"/><path d="M-2-6 0-4 2-6M-2 6 0 4 2 6" fill="none"/></g></svg>`;
 function sparkle(el) {
@@ -696,7 +881,7 @@ function hide() {
 }
 $("close").addEventListener("click", hide);
 $("overlay").addEventListener("click", e => { if (e.target.id === "overlay") hide(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape") { hide(); hideFinale(); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { if (!$("game").hidden) { if (!GAME.done) closeGame(); return; } hide(); hideFinale(); } });
 
 // ===================== Finale =====================
 function finale() {
@@ -706,6 +891,8 @@ function finale() {
   renderSecret($("finSecret"), new Set());
   $("finPups").innerHTML = pup(FURS[0], { hat: true, anim: "head-l" }) + pup(FURS[3], { hat: true, anim: "head-r" }) + pup(FURS[1], { hat: true, anim: "head-l" });
   $("finSecret").setAttribute("aria-label", SECRET);
+  const st = starTotal(); $("finStars").hidden = !st;
+  $("finStars").textContent = `Du hast ${st} von ${MAX_STARS} Sternen gesammelt.`;
   const fm = $("finMedia"); fm.innerHTML = "";
   if (FINALE_VIDEO) {
     const v = document.createElement("video");
@@ -824,6 +1011,12 @@ const Music = (() => {
   return {
     chime: () => fx([[1567.98, 0], [2093, .08], [2637, .16], [3136, .24, .09]]),
     fanfare: () => fx([[1046.5, 0], [1318.5, .15], [1568, .3], [2093, .45, .16], [1568, 1.0, .1], [2093, 1.15, .14], [2637, 1.3, .16]]),
+    // Kurze Spiel-Töne (nur wenn die Musik an ist): tap, ok, bad, clear, win
+    fx: kind => fx({
+      tap: [[1318.5, 0, .07]], ok: [[1568, 0, .08], [2093, .06, .07]], bad: [[220, 0, .1], [207.7, .08, .08]],
+      clear: [[1568, 0, .09], [1975.5, .07, .09], [2349.3, .14, .09], [3136, .21, .07]],
+      win: [[1046.5, 0], [1318.5, .12], [1568, .24], [2093, .36, .15]],
+    }[kind] || []),
   };
 })();
 
@@ -837,7 +1030,7 @@ function toast(msg) {
 if (DEMO) {
   $("demo").hidden = false;
   $("demoDay").addEventListener("input", e => { demoDay = +e.target.value; refresh(); });
-  $("reset").addEventListener("click", () => { opened.clear(); flag("finale", false); refresh(); });
+  $("reset").addEventListener("click", () => { opened.clear(); flag("finale", false); stars = {}; saveStars(); renderStars(); refresh(); });
   $("openAll").addEventListener("click", () => { for (let n = 1; n <= 24; n++) if (isUnlocked(n)) opened.add(n); refresh(); });
   $("testFinale").addEventListener("click", finale);
   if (!opened.size) [1,2,3,4,6,8].forEach(n => opened.add(n));

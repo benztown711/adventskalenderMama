@@ -24,11 +24,12 @@ Mama spielt jedes Türchen erst frei, mit kurzen Rätseln im Stil ihrer Handyspi
 - [ ] AK10: Alle bisherigen Tests laufen weiter; sie öffnen Türchen über einen Helfer, der das Level mit echten Klicks löst.
 
 ## Tests
-- Alle in `tests/003-tuerchen-freispielen.spec.js`, je AK ein Test mit dem AK-Kürzel im Namen.
-- Bisherige Tests: `door(page, n).click()` beim ersten Öffnen ersetzt durch Helfer `openDoor(page, n)` (Spiel lösen, dann gleiche Prüfungen wie vorher).
+- AK1, AK2 (Reihenfolge, festes Level), AK6 bis AK10: `tests/003-tuerchen-freispielen.spec.js`.
+- AK2 (alle Level lösbar) und AK3, AK4, AK5: je Spiel `tests/003-spiel-pfeile.spec.js`, `tests/003-spiel-bloecke.spec.js`, `tests/003-spiel-waudoku.spec.js`.
+- Bisherige Tests: erstes Öffnen eines Türchens über Helfer `openDoor(page, n)` (Spiel mit echten Klicks lösen, dann gleiche Prüfungen wie vorher).
 
 ## Technik
-- Spiele als eigene Dateien `spiele/pfeile.js`, `spiele/bloecke.js`, `spiele/waudoku.js` mit gleicher Schnittstelle (`create(el, day, api)`, `solveStep()`), Rahmen in `index.html`.
+- Spiele als eigene Dateien `spiele/pfeile.js`, `spiele/bloecke.js`, `spiele/waudoku.js` mit gleicher Schnittstelle (`create(el, day, api)`, `nextMove()`), Rahmen in `index.html`.
 - Deploy kopiert zusätzlich `spiele/`.
 - Level per Zufallsgenerator mit festem Seed pro Tag, Lösbarkeit durch Konstruktion.
 

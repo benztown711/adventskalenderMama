@@ -1,5 +1,5 @@
 const { test, expect } = require("@playwright/test");
-const { openAt, door } = require("./helpers");
+const { openAt, door, openDoor } = require("./helpers");
 
 // Spec: specs/000-basis.md
 
@@ -38,7 +38,7 @@ test("AK3: am 5. Dezember sind 1 bis 5 frei, Rest gesperrt, 5 ist heute", async 
 test("AK4: Türchen öffnen zeigt Inhalt, Schließen blendet aus", async ({ page }) => {
   await openAt(page, "2026-12-05T08:00:00");
   const { title, text } = await page.evaluate(() => DAYS[3]);
-  await door(page, 3).click();
+  await openDoor(page, 3);
   await expect(page.locator("#overlay")).toBeVisible();
   await expect(page.locator("#cardDay")).toHaveText("3. Dezember");
   await expect(page.locator("#cardTitle")).toHaveText(title);
@@ -49,7 +49,7 @@ test("AK4: Türchen öffnen zeigt Inhalt, Schließen blendet aus", async ({ page
 
 test("AK5: geöffnete Türchen bleiben nach Neuladen offen", async ({ page }) => {
   await openAt(page, "2026-12-05T08:00:00");
-  await door(page, 2).click();
+  await openDoor(page, 2);
   await expect(door(page, 2)).toHaveClass(/open/);
   await page.reload({ waitUntil: "domcontentloaded" });
   await expect(door(page, 2)).toHaveClass(/open/);
@@ -76,7 +76,7 @@ test("AK8: Handybreite ohne Querscrollen und ohne JS-Fehler", async ({ page }) =
   page.on("pageerror", e => errors.push(e.message));
   await page.setViewportSize({ width: 390, height: 844 });
   await openAt(page, "2026-12-05T08:00:00");
-  await door(page, 1).click();
+  await openDoor(page, 1);
   await expect(page.locator("#overlay")).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
