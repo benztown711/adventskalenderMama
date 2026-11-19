@@ -9,6 +9,7 @@ Ein digitaler Adventskalender von Lenny für Mama, fürs Handy. Motiv: Lebkuchen
 - Inhalte stehen im Script im Objekt `DAYS` (Typen: text, hint, photo, video, audio). Fehlt eine Mediendatei, wird nur der Text gezeigt.
 - Fotos, Videos und Musik kommen nach `assets/`.
 - **Puzzle und geheimer Satz:** Jedes Türchen schaltet ein Puzzleteil von `assets/puzzle.jpg` und einen Buchstaben von `SECRET` frei. Sind alle 24 offen, startet das Finale (komplettes Foto, Botschaft, Konfetti, `assets/finale.mp4`).
+- **Türchen freispielen:** Vor dem ersten Öffnen spielt Mama ein kurzes Rätsel frei, reihum Pfeile, Blöcke oder Wau-Doku (Dateien in `spiele/`). Je nach Fehlern und Tipps gibt es 1 bis 3 Sterne (oben links, im Finale "X von 72"). Tipp, Neu starten und "Welpe hilft" sorgen dafür, dass sie nie hängen bleibt.
 - **Musik:** Schalter oben rechts, eingebaute Spieluhr („Stille Nacht“). Eigene Musik über `MUSIC_FILE`. Läuft ein Video von Lenny, pausiert die Musik.
 - Was Lenny aufnehmen soll: siehe [`DREHBUCH.md`](DREHBUCH.md).
 

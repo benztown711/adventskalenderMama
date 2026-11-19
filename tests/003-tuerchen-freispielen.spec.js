@@ -53,6 +53,7 @@ test("AK6: nach dem Lösen Sterne-Jubel, Türchen offen, Pop-up mit Puzzleteil",
   await expect(page.locator("#gameWin")).toBeVisible();
   await expect(page.locator("#gameWin h3")).toHaveText("Geschafft!");
   await expect(page.locator("#gameWin svg.on")).toHaveCount(3);
+  await expect(page.locator("#gameClose")).toBeHidden();      // Jubel lässt sich nicht wegdrücken, das Türchen geht sicher auf
   await expect(page.locator("#overlay")).toBeVisible({ timeout: 8000 });
   await expect(page.locator("#game")).toBeHidden();
   await expect(door(page, 2)).toHaveClass(/open/);
@@ -104,11 +105,12 @@ test("AK8: Tipp, Neu starten und Welpe hilft", async ({ page }) => {
 test("AK8: nach 2 Minuten hilft der Welpe", async ({ page }) => {
   await page.clock.install({ time: new Date("2026-12-10T12:00:00") });
   await page.goto(APP, { waitUntil: "domcontentloaded" });
-  await door(page, 6).click();
+  // Mit installierter Uhr steht requestAnimationFrame still, darum Klick direkt im Seiten-JS
+  await page.evaluate(() => document.querySelector('.win[data-n="6"]').click());
   await expect(page.locator("#gameHelp")).toBeHidden();
-  await page.clock.runFor(119000);
+  await page.clock.fastForward(119000);
   await expect(page.locator("#gameHelp")).toBeHidden();
-  await page.clock.runFor(2000);
+  await page.clock.fastForward(2000);
   await expect(page.locator("#gameHelp")).toBeVisible();
 });
 
