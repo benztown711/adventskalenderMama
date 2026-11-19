@@ -283,6 +283,7 @@ body.fin-open #snow { z-index: 23; }
   padding: 16px 14px 16px; display: flex; flex-direction: column; gap: 10px; text-align: center;
   box-shadow: 0 0 0 4px var(--ginger), 0 22px 60px rgba(0,0,0,.5);
 }
+.gcard:focus { outline: none; }
 .gcard .gday { font: 19px/1 var(--font-hand); color: var(--red); transform: rotate(-2deg); margin-top: 4px; }
 .gcard h2 { font-family: var(--font-display); font-weight: 600; font-size: 25px; margin: 0; }
 .gcard .ggoal { margin: -4px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.4; text-wrap: balance; }
@@ -403,7 +404,7 @@ body.fin-open #snow { z-index: 23; }
 
 <!-- Spiel zum Freispielen eines Türchens -->
 <div class="game" id="game" hidden role="dialog" aria-modal="true" aria-labelledby="gameTitle">
-  <div class="gcard">
+  <div class="gcard" id="gameCard" tabindex="-1">
     <button type="button" class="gx" id="gameClose" aria-label="Spiel schließen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
@@ -773,7 +774,7 @@ function startGame(n) {
   mountGame();
   gameLater(() => ($("gameHelp").hidden = false), 120000);   // nach 2 Minuten hilft der Welpe
   requestAnimationFrame(() => g.classList.add("show"));
-  $("gameClose").focus({ preventScroll: true });
+  $("gameCard").focus({ preventScroll: true });
 }
 function closeGame(won = false) {
   const g = $("game"); if (g.hidden) return;
